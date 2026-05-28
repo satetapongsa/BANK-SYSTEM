@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import * as storage from "@/app/lib/storage";
 import { useRouter } from "next/navigation";
 import {
   Search, Settings, ShieldCheck, ShieldAlert, LayoutDashboard,
@@ -15,12 +15,9 @@ export default function AccountsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase.from('clients').select('*').order('id', { ascending: false });
-      setClients(data || []);
-      setLoading(false);
-    };
-    fetch();
+    const data = storage.getClients();
+    setClients(data);
+    setLoading(false);
   }, []);
 
   const filtered = clients.filter(c => {
@@ -43,7 +40,7 @@ export default function AccountsPage() {
       <aside className="relative z-20 w-64 flex flex-col flex-shrink-0"
              style={{ background: 'rgba(8,12,20,0.95)', borderRight: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)' }}>
         <div className="p-5 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center animate-pulse-glow"
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}>
             <Landmark size={18} className="text-white" />
           </div>
@@ -75,7 +72,7 @@ export default function AccountsPage() {
         <div className="flex-1 overflow-y-auto p-8 space-y-6">
           
           {/* Mini Stats */}
-          <div className="grid grid-cols-3 gap-4 opacity-0 animate-fade-up" style={{ animationFillMode: 'forwards' }}>
+          <div className="grid grid-cols-3 gap-4">
             {[
               { label: 'TOTAL ASSETS', value: `฿${totalBalance.toLocaleString()}`, color: '#4f9cf9' },
               { label: 'ACTIVE', value: activeCount, color: '#3fb950' },
@@ -89,12 +86,12 @@ export default function AccountsPage() {
           </div>
 
           {/* Search + Filter */}
-          <div className="flex gap-3 opacity-0 animate-fade-up stagger-2" style={{ animationFillMode: 'forwards' }}>
+          <div className="flex gap-3">
             <div className="flex-1 relative">
               <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: '#484f58' }} />
               <input
                 placeholder="ค้นหาด้วยชื่อ, เลขบัญชี, อีเมล..."
-                className="input-dark pl-10"
+                className="input-dark pl-14"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
               />
@@ -115,7 +112,7 @@ export default function AccountsPage() {
           </div>
 
           {/* Table */}
-          <div className="glass rounded-2xl overflow-hidden opacity-0 animate-fade-up stagger-3" style={{ animationFillMode: 'forwards' }}>
+          <div className="glass rounded-2xl overflow-hidden">
             <table className="w-full table-dark">
               <thead>
                 <tr>
@@ -142,8 +139,7 @@ export default function AccountsPage() {
                     </td>
                   </tr>
                 ) : filtered.map((client, i) => (
-                  <tr key={client.id} className="opacity-0 animate-fade-up"
-                      style={{ animationDelay: `${i * 0.03}s`, animationFillMode: 'forwards' }}>
+                  <tr key={client.id} className="">
                     <td className="px-6 py-4 font-mono text-xs" style={{ color: '#4f9cf9' }}>{client.account_number}</td>
                     <td className="px-6 py-4 font-bold text-sm" style={{ color: '#f0f6fc' }}>{client.name}</td>
                     <td className="px-6 py-4 text-xs" style={{ color: '#8b949e' }}>{client.email || '—'}</td>

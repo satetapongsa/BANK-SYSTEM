@@ -1,0 +1,21 @@
+- [ ] Delete legacy pages and directories (`dashboard`, `user`, old `page.tsx` etc.)
+- [ ] Create `components/` directory with:
+  - Layout.tsx (header/footer wrapper)
+  - Card.tsx (glass card component)
+  - Button.tsx (styled button)
+  - Table.tsx (styled table)
+  - Loader.tsx (shimmer loader)
+- [ ] Create `styles/` folder and ensure `globals.css` is imported (already done).
+- [ ] Refactor `lib/storage.ts` (already fixed) – ensure export of types.
+- [ ] Create new pages under `app/`:
+  - `overview/page.tsx` (Executive dashboard – already created, but will replace with updated version if needed)
+  - `clients/page.tsx` (list clients with table, add/delete)
+  - `clients/new/page.tsx` (form to add client)
+  - `transactions/page.tsx` (list recent transactions)
+  - `transactions/new/page.tsx` (form to add transaction)
+  - `settings/page.tsx` (admin toggle, data reset)
+  - `login/page.tsx` (existing login page – keep or adjust)
+- [ ] Add navigation links in Layout.
+- [ ] Add SEO metadata (`metadata` export) for each page.
+- [ ] Verify application runs (`npm run dev`) with no runtime errors.
+- [ ] Initialize Git repo, commit all changes, push to GitHub (`origin` remote).

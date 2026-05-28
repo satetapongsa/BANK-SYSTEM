@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import * as storage from "@/app/lib/storage";
 import {
   LayoutDashboard, Users, Banknote, LogOut,
   TrendingUp, Landmark, RefreshCw, AlertTriangle, ShieldCheck,
@@ -26,31 +26,48 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     setLoading(true);
-    const { data } = await supabase.from('clients').select('*').order('id', { ascending: false });
-    if (data) setClients(data);
+    let data = storage.getClients();
+    // If no clients exist, create 10 mock accounts
+    if (!data || data.length === 0) {
+      const mockNames = ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank', 'Grace', 'Heidi', 'Ivan', 'Judy'];
+      mockNames.forEach((name, i) => {
+        const accNum = storage.generateAccountNumber();
+        const email = `${name.toLowerCase()}${i + 1}@example.com`;
+        const balance = Math.round(Math.random() * 10000);
+        storage.insertClient({
+          name,
+          email,
+          account_number: accNum,
+          balance,
+          status: 'Active',
+          region: 'Bangkok',
+        });
+      });
+      data = storage.getClients();
+    }
+    setClients(data);
     setLoading(false);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     localStorage.clear();
-    await supabase.auth.signOut();
     window.location.href = "/";
   };
 
   const handleCreate = async () => {
     if (!formData.name || !formData.balance) return;
-    const accNum = `101-0-${Math.floor(Math.random() * 89999 + 10000)}-${Math.floor(Math.random() * 9)}`;
-    setClients([{ id: Date.now(), name: formData.name, account_number: accNum, balance: formData.balance, status: 'Active' }, ...clients]);
-    setFormData({ name: "", email: "", balance: "" });
-    setShowForm(false);
-    await supabase.from('clients').insert([{
+    const accNum = storage.generateAccountNumber();
+    const newClient = storage.insertClient({
       name: formData.name,
       email: formData.email,
       account_number: accNum,
       balance: parseFloat(formData.balance),
       status: 'Active',
       region: 'Bangkok'
-    }]);
+    });
+    setClients([newClient, ...clients]);
+    setFormData({ name: "", email: "", balance: "" });
+    setShowForm(false);
     fetchData();
   };
 
@@ -62,7 +79,7 @@ export default function Dashboard() {
     return (
       <div className="h-screen flex flex-col items-center justify-center" style={{ background: '#080c14' }}>
         <div className="animated-bg grid-bg" />
-        <div className="relative z-10 text-center animate-fade-scale">
+        <div className="relative z-10 text-center">
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-full mb-6"
                style={{ background: 'rgba(248,81,73,0.1)', border: '2px solid rgba(248,81,73,0.3)' }}>
             <AlertTriangle size={48} style={{ color: '#f85149' }} />
@@ -87,7 +104,7 @@ export default function Dashboard() {
              style={{ background: 'rgba(8,12,20,0.95)', borderRight: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)' }}>
         
         <div className="p-5 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center animate-pulse-glow"
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}>
             <Landmark size={18} className="text-white" />
           </div>
@@ -113,7 +130,7 @@ export default function Dashboard() {
             <div>
               <p className="text-sm font-bold" style={{ color: '#f0f6fc' }}>Admin</p>
               <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-blink" />
+                <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
                 <p className="text-xs" style={{ color: '#3fb950' }}>Online</p>
               </div>
             </div>
@@ -140,7 +157,7 @@ export default function Dashboard() {
             <button onClick={fetchData}
                     className="p-2.5 rounded-xl transition-all"
                     style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#8b949e' }}>
-              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+              <RefreshCw size={16} className={loading ? '' : ''} />
             </button>
             <button onClick={() => setShowForm(true)}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm btn-shimmer"
@@ -180,7 +197,7 @@ export default function Dashboard() {
                 delay: '0.15s'
               }
             ].map((stat, i) => (
-              <div key={i} className="glass card-hover rounded-2xl p-6 opacity-0 animate-fade-up"
+              <div key={i} className="glass card-hover rounded-2xl p-6 opacity-0"
                    style={{ animationDelay: stat.delay, animationFillMode: 'forwards' }}>
                 <div className="flex items-start justify-between mb-4">
                   <p className="text-xs font-bold tracking-widest" style={{ color: '#484f58' }}>{stat.label}</p>
@@ -198,7 +215,7 @@ export default function Dashboard() {
           </div>
 
           {/* Client Table */}
-          <div className="glass rounded-2xl overflow-hidden opacity-0 animate-fade-up stagger-4" style={{ animationFillMode: 'forwards' }}>
+          <div className="glass rounded-2xl overflow-hidden opacity-0" style={{ animationFillMode: 'forwards' }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
               <div className="flex items-center gap-2">
                 <Users size={18} style={{ color: '#4f9cf9' }} />
@@ -236,7 +253,7 @@ export default function Dashboard() {
                     </td>
                   </tr>
                 ) : clients.map((c, idx) => (
-                  <tr key={c.id} className="opacity-0 animate-fade-up"
+                  <tr key={c.id} className="opacity-0"
                       style={{ animationDelay: `${idx * 0.04}s`, animationFillMode: 'forwards' }}>
                     <td className="px-6 py-4 font-mono text-xs" style={{ color: '#4f9cf9' }}>{c.account_number}</td>
                     <td className="px-6 py-4 font-bold text-sm" style={{ color: '#f0f6fc' }}>{c.name}</td>

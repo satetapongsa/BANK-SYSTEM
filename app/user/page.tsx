@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import * as storage from "@/app/lib/storage";
 import { useRouter } from "next/navigation";
 import { LogOut, Wallet, Send, RefreshCw, Copy, CheckCircle, Loader2, ArrowUpRight, ArrowDownLeft, Clock, Shield } from "lucide-react";
 
@@ -80,7 +80,7 @@ function ReceiptModal({ transfer, onClose }: any) {
          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)' }}>
       <div className="glass rounded-3xl p-8 w-full max-w-sm receipt-modal text-center"
            style={{ boxShadow: '0 8px 64px rgba(0,0,0,0.8), 0 0 0 1px rgba(63,185,80,0.3)' }}>
-        <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center animate-success-pop"
+        <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
              style={{ background: 'rgba(63,185,80,0.15)', border: '2px solid rgba(63,185,80,0.4)' }}>
           <CheckCircle size={36} style={{ color: '#3fb950' }} />
         </div>
@@ -130,23 +130,21 @@ export default function UserDashboard() {
 
   useEffect(() => {
     const init = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.href = "/"; return; }
-      const userEmail = session.user.email;
-
-      let { data: existing } = await supabase.from('clients').select('*').eq('email', userEmail).maybeSingle();
+      const email = storage.getLoggedInUserEmail();
+      if (!email) { window.location.href = "/"; return; }
+      let existing = storage.findClient(c => c.email === email);
       if (existing) {
         setProfile(existing);
       } else {
         const newAcc = {
-          name: session.user.user_metadata.full_name || "ลูกค้า Google",
-          email: userEmail,
+          name: "ลูกค้า Google",
+          email: email,
           account_number: `00${Math.floor(Math.random() * 9)}-${Math.floor(10000 + Math.random() * 90000)}-${Math.floor(10 + Math.random() * 90)}`,
           balance: 500.00,
           status: 'Active',
           region: 'Online'
         };
-        const { data: created } = await supabase.from('clients').insert([newAcc]).select().single();
+        const created = storage.insertClient(newAcc);
         setProfile(created);
       }
       setLoading(false);
@@ -158,12 +156,11 @@ export default function UserDashboard() {
   useEffect(() => {
     if (!profile) return;
     const fetchTx = async () => {
-      const { data } = await supabase.from('transactions')
-        .select('*')
-        .or(`sender_id.eq.${profile.id},receiver_id.eq.${profile.id}`)
-        .order('created_at', { ascending: false })
-        .limit(20);
-      setTransactions(data || []);
+      const allTx = storage.getTransactions();
+      const filtered = allTx.filter(t => t.sender_id === profile.id || t.receiver_id === profile.id)
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 20);
+      setTransactions(filtered);
     };
     fetchTx();
   }, [profile]);
@@ -179,17 +176,14 @@ export default function UserDashboard() {
     setShowPin(false);
     setTransferLoading(true);
     try {
-      const { data: receiver } = await supabase.from('clients').select('*').eq('account_number', transferTo).single();
+      const receiver = storage.findClient(c => c.account_number === transferTo);
       if (!receiver) throw new Error("ไม่พบเลขบัญชีปลายทาง");
-
       const amtNum = parseFloat(amount);
-
       // Update balances
-      await supabase.from('clients').update({ balance: profile.balance - amtNum }).eq('id', profile.id);
-      await supabase.from('clients').update({ balance: receiver.balance + amtNum }).eq('id', receiver.id);
-
+      storage.updateClient(profile.id, { balance: profile.balance - amtNum });
+      storage.updateClient(receiver.id, { balance: receiver.balance + amtNum });
       // Record transaction
-      await supabase.from('transactions').insert([{
+      storage.addTransaction({
         sender_id: profile.id,
         receiver_id: receiver.id,
         sender_account: profile.account_number,
@@ -198,18 +192,18 @@ export default function UserDashboard() {
         type: 'Transfer',
         description: `โอนเงินจาก ${profile.name} ไปยัง ${receiver.name}`,
         status: 'Success'
-      }]);
+      });
 
       // Refresh profile
-      const { data: updatedMe } = await supabase.from('clients').select('*').eq('id', profile.id).single();
-      setProfile(updatedMe);
+      const updatedMe = storage.findClient(profile.id);
+      if (updatedMe) setProfile(updatedMe);
 
       // Refresh transactions
-      const { data: txData } = await supabase.from('transactions')
-        .select('*')
-        .or(`sender_id.eq.${profile.id},receiver_id.eq.${profile.id}`)
-        .order('created_at', { ascending: false }).limit(20);
-      setTransactions(txData || []);
+      const allTx = storage.getTransactions();
+      const filteredTx = allTx.filter(t => t.sender_id === profile.id || t.receiver_id === profile.id)
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 20);
+      setTransactions(filteredTx);
 
       setReceipt({ amount, transferTo, receiverName: receiver.name });
       setAmount("");
@@ -228,15 +222,14 @@ export default function UserDashboard() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    localStorage.clear();
     window.location.href = "/";
   };
 
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center" style={{ background: '#080c14' }}>
-      <div className="animated-bg" />
       <div className="relative z-10 text-center">
-        <Loader2 size={40} className="animate-spin mx-auto mb-4" style={{ color: '#4f9cf9' }} />
+        <Loader2 size={40} className="mx-auto mb-4" style={{ color: '#4f9cf9' }} />
         <p className="text-sm" style={{ color: '#8b949e' }}>กำลังโหลดข้อมูลบัญชี...</p>
       </div>
     </div>
@@ -244,7 +237,7 @@ export default function UserDashboard() {
 
   return (
     <div className="min-h-screen pb-10" style={{ background: '#080c14' }}>
-      <div className="animated-bg grid-bg" />
+      <div className="grid-bg" />
       {showPin && (
         <PinModal
           onConfirm={handleTransferConfirm}
@@ -258,7 +251,7 @@ export default function UserDashboard() {
       {/* Header / Balance Card */}
       <div className="relative z-10 p-5 pb-20" style={{ background: 'linear-gradient(180deg, rgba(59,130,246,0.15) 0%, transparent 100%)' }}>
         <div className="max-w-md mx-auto">
-          <div className="flex justify-between items-center mb-6 animate-fade-up">
+          <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2 font-black text-lg" style={{ color: '#f0f6fc' }}>
               <div className="w-8 h-8 rounded-xl flex items-center justify-center"
                    style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}>
@@ -274,7 +267,7 @@ export default function UserDashboard() {
           </div>
 
           {/* Balance Card */}
-          <div className="glass-blue rounded-3xl p-6 animate-fade-up stagger-1" style={{ animationFillMode: 'forwards' }}>
+          <div className="glass-blue rounded-3xl p-6" style={{ animationFillMode: 'forwards' }}>
             <p className="text-xs font-bold tracking-widest mb-2" style={{ color: '#8b949e' }}>ยอดเงินคงเหลือ</p>
             <h1 className="text-5xl font-black mb-1 text-glow-blue" style={{ color: '#4f9cf9' }}>
               ฿{profile?.balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -300,7 +293,7 @@ export default function UserDashboard() {
 
       {/* Transfer Section */}
       <div className="relative z-10 max-w-md mx-auto px-5 -mt-12">
-        <div className="glass rounded-2xl p-6 mb-6 animate-fade-up stagger-2" style={{ animationFillMode: 'forwards' }}>
+        <div className="glass rounded-2xl p-6 mb-6" style={{ animationFillMode: 'forwards' }}>
           <h3 className="font-black text-sm mb-4 flex items-center gap-2" style={{ color: '#f0f6fc' }}>
             <Send size={18} style={{ color: '#4f9cf9' }} />
             โอนเงิน
@@ -338,13 +331,13 @@ export default function UserDashboard() {
                 boxShadow: transferLoading || !amount || !transferTo ? 'none' : '0 4px 24px rgba(59,130,246,0.4)',
                 cursor: transferLoading || !amount || !transferTo ? 'not-allowed' : 'pointer'
               }}>
-              {transferLoading ? <><Loader2 size={18} className="animate-spin" /> กำลังทำรายการ...</> : <><Send size={18} /> ยืนยันโอนเงิน</>}
+              {transferLoading ? <><Loader2 size={18} className="" /> กำลังทำรายการ...</> : <><Send size={18} /> ยืนยันโอนเงิน</>}
             </button>
           </div>
         </div>
 
         {/* Transaction History */}
-        <div className="glass rounded-2xl overflow-hidden animate-fade-up stagger-3" style={{ animationFillMode: 'forwards' }}>
+        <div className="glass rounded-2xl overflow-hidden" style={{ animationFillMode: 'forwards' }}>
           <div className="flex items-center gap-2 px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <Clock size={16} style={{ color: '#4f9cf9' }} />
             <h3 className="font-black text-sm" style={{ color: '#f0f6fc' }}>ประวัติธุรกรรม</h3>
@@ -356,8 +349,8 @@ export default function UserDashboard() {
           ) : transactions.map((tx, i) => {
             const isSender = tx.sender_id === profile?.id;
             return (
-              <div key={tx.id} className="flex items-center justify-between px-6 py-4 opacity-0 animate-fade-up"
-                   style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', animationDelay: `${i * 0.05}s`, animationFillMode: 'forwards' }}>
+              <div key={tx.id} className="flex items-center justify-between px-6 py-4"
+                   style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                        style={{

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import * as storage from "@/app/lib/storage";
 import { useRouter, useParams } from "next/navigation";
 import {
   ArrowLeft, Save, Ban, Trash2, History, ShieldCheck,
@@ -22,37 +22,42 @@ export default function ManageClient() {
   useEffect(() => { fetchClientData(); }, []);
 
   const fetchClientData = async () => {
-    const { data: c } = await supabase.from('clients').select('*').eq('id', params.id).single();
+    const c = storage.findClient(Number(params.id));
     if (c) { setClient(c); setEditName(c.name); setEditBalance(c.balance); }
 
-    const { data: t } = await supabase.from('transactions')
-      .select('*')
-      .or(`sender_id.eq.${params.id},receiver_id.eq.${params.id}`)
-      .order('created_at', { ascending: false });
-    setTransactions(t || []);
+    const allTx = storage.getTransactions();
+    const t = allTx.filter(t => t.sender_id === Number(params.id) || t.receiver_id === Number(params.id));
+    setTransactions(t);
   };
 
   const handleUpdate = async () => {
     setSaving(true);
-    const { error } = await supabase.from('clients')
-      .update({ name: editName, balance: parseFloat(editBalance) })
-      .eq('id', params.id);
+    storage.updateClient(Number(params.id), { name: editName, balance: parseFloat(editBalance) });
     setSaving(false);
-    if (!error) { setSaveOk(true); setTimeout(() => setSaveOk(false), 2000); setClient({ ...client, name: editName, balance: editBalance }); }
+    setSaveOk(true);
+    setTimeout(() => setSaveOk(false), 2000);
+    setClient({ ...client, name: editName, balance: editBalance });
   };
 
   const toggleStatus = async () => {
     const newStatus = client.status === 'Active' ? 'Blocked' : 'Active';
     if (!confirm(`ยืนยันการเปลี่ยนสถานะเป็น ${newStatus}?`)) return;
-    await supabase.from('clients').update({ status: newStatus }).eq('id', params.id);
+    storage.updateClient(Number(params.id), { status: newStatus });
     setClient({ ...client, status: newStatus });
   };
 
   const handleDelete = async () => {
     const txt = prompt("พิมพ์ 'DELETE' เพื่อยืนยันการลบบัญชีถาวร");
     if (txt !== 'DELETE') return;
-    await supabase.from('transactions').delete().or(`sender_id.eq.${params.id},receiver_id.eq.${params.id}`);
-    await supabase.from('clients').delete().eq('id', params.id);
+    // Delete related transactions
+    const allTx = storage.getTransactions();
+    allTx.forEach(t => {
+      if (t.sender_id === Number(params.id) || t.receiver_id === Number(params.id)) {
+        storage.deleteTransaction(t.id);
+      }
+    });
+    // Delete client
+    storage.deleteClient(Number(params.id));
     router.push("/dashboard");
   };
 
@@ -62,7 +67,7 @@ export default function ManageClient() {
   if (!client) return (
     <div className="h-screen flex items-center justify-center" style={{ background: '#080c14' }}>
       <div className="animated-bg" />
-      <p className="relative z-10 text-sm animate-blink" style={{ color: '#484f58' }}>Loading System...</p>
+      <p className="relative z-10 text-sm" style={{ color: '#484f58' }}>Loading System...</p>
     </div>
   );
 
@@ -72,7 +77,7 @@ export default function ManageClient() {
 
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Breadcrumb */}
-        <div className="flex items-center justify-between mb-8 animate-fade-up">
+        <div className="flex items-center justify-between mb-8">
           <button onClick={() => router.back()}
                   className="flex items-center gap-2 text-sm font-bold transition-all"
                   style={{ color: '#8b949e' }}
@@ -89,7 +94,7 @@ export default function ManageClient() {
         </div>
 
         {/* Top Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-6 opacity-0 animate-fade-up stagger-1" style={{ animationFillMode: 'forwards' }}>
+        <div className="grid grid-cols-3 gap-4 mb-6 opacity-0" style={{ animationFillMode: 'forwards' }}>
           {[
             { label: 'CURRENT BALANCE', value: `฿${Number(client.balance).toLocaleString()}`, color: '#4f9cf9', icon: DollarSign },
             { label: 'TOTAL SENT', value: `฿${totalSent.toLocaleString()}`, color: '#f85149', icon: TrendingDown },
@@ -108,7 +113,7 @@ export default function ManageClient() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
           {/* Edit Information */}
-          <div className="md:col-span-2 glass rounded-2xl p-8 opacity-0 animate-fade-up stagger-2" style={{ animationFillMode: 'forwards' }}>
+          <div className="md:col-span-2 glass rounded-2xl p-8 opacity-0" style={{ animationFillMode: 'forwards' }}>
             <h2 className="font-black text-base mb-6 flex items-center gap-2" style={{ color: '#f0f6fc' }}>
               <Edit3 size={18} style={{ color: '#4f9cf9' }} /> Edit Information
             </h2>
@@ -166,7 +171,7 @@ export default function ManageClient() {
           </div>
 
           {/* Right Column */}
-          <div className="space-y-4 opacity-0 animate-fade-up stagger-3" style={{ animationFillMode: 'forwards' }}>
+          <div className="space-y-4 opacity-0" style={{ animationFillMode: 'forwards' }}>
             {/* Account Status */}
             <div className="glass rounded-2xl p-6">
               <h2 className="text-sm font-black mb-4 flex items-center gap-2" style={{ color: '#f0f6fc' }}>
@@ -177,7 +182,7 @@ export default function ManageClient() {
                      background: client.status === 'Active' ? 'rgba(63,185,80,0.08)' : 'rgba(248,81,73,0.08)',
                      border: `1px solid ${client.status === 'Active' ? 'rgba(63,185,80,0.2)' : 'rgba(248,81,73,0.2)'}`
                    }}>
-                <div className={`w-2.5 h-2.5 rounded-full mx-auto mb-2 ${client.status === 'Active' ? 'bg-green-400 animate-blink' : 'bg-red-400'}`} />
+                <div className={`w-2.5 h-2.5 rounded-full mx-auto mb-2 ${client.status === 'Active' ? 'bg-green-400 ' : 'bg-red-400'}`} />
                 <p className="font-black text-lg" style={{ color: client.status === 'Active' ? '#3fb950' : '#f85149' }}>
                   {client.status}
                 </p>
@@ -223,7 +228,7 @@ export default function ManageClient() {
           </div>
 
           {/* Transaction History */}
-          <div className="md:col-span-3 glass rounded-2xl overflow-hidden opacity-0 animate-fade-up stagger-4" style={{ animationFillMode: 'forwards' }}>
+          <div className="md:col-span-3 glass rounded-2xl overflow-hidden opacity-0" style={{ animationFillMode: 'forwards' }}>
             <div className="flex items-center gap-2 px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
               <History size={18} style={{ color: '#4f9cf9' }} />
               <h2 className="font-black text-sm" style={{ color: '#f0f6fc' }}>Transaction History</h2>

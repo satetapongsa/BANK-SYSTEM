@@ -2,97 +2,229 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
-import { LogOut, Wallet, Send, RefreshCw, Copy, CheckCircle, Loader2 } from "lucide-react";
+import { LogOut, Wallet, Send, RefreshCw, Copy, CheckCircle, Loader2, ArrowUpRight, ArrowDownLeft, Clock, Shield } from "lucide-react";
 
+// ─── PIN Modal ───────────────────────────────────────────────
+function PinModal({ onConfirm, onCancel, amount, receiverName }: any) {
+  const [pin, setPin] = useState("");
+  const CORRECT_PIN = "123456"; // Default PIN for demo — can be stored per user
+
+  const handleKey = (k: string) => {
+    if (k === "DEL") { setPin(p => p.slice(0, -1)); return; }
+    if (pin.length >= 6) return;
+    const next = pin + k;
+    setPin(next);
+    if (next.length === 6) {
+      setTimeout(() => {
+        if (next === CORRECT_PIN) {
+          onConfirm();
+        } else {
+          alert("PIN ไม่ถูกต้อง! ลองใหม่อีกครั้ง\n(PIN สาธิต: 1 2 3 4 5 6)");
+          setPin("");
+        }
+      }, 200);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)' }}>
+      <div className="glass rounded-3xl p-8 w-full max-w-sm receipt-modal text-center"
+           style={{ boxShadow: '0 8px 64px rgba(0,0,0,0.8), 0 0 0 1px rgba(79,156,249,0.2)' }}>
+        <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+             style={{ background: 'rgba(79,156,249,0.12)', border: '1px solid rgba(79,156,249,0.25)' }}>
+          <Shield size={28} style={{ color: '#4f9cf9' }} />
+        </div>
+        <h2 className="font-black text-lg mb-1" style={{ color: '#f0f6fc' }}>ยืนยัน PIN</h2>
+        <p className="text-xs mb-1" style={{ color: '#8b949e' }}>โอนเงิน <strong style={{ color: '#3fb950' }}>฿{Number(amount).toLocaleString()}</strong></p>
+        <p className="text-xs mb-6" style={{ color: '#484f58' }}>ไปยัง {receiverName || '...'}</p>
+        <p className="text-xs mb-2 italic" style={{ color: '#484f58' }}>PIN สาธิต: 123456</p>
+
+        {/* PIN Dots */}
+        <div className="flex justify-center gap-3 mb-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className={`pin-dot ${i < pin.length ? 'filled' : ''}`} />
+          ))}
+        </div>
+
+        {/* Keypad */}
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          {['1','2','3','4','5','6','7','8','9','','0','DEL'].map((k, i) => (
+            k === '' ? <div key={i} /> :
+            <button key={i} onClick={() => handleKey(k)}
+                    className="h-14 rounded-xl font-bold text-lg transition-all"
+                    style={{
+                      background: k === 'DEL' ? 'rgba(248,81,73,0.08)' : 'rgba(255,255,255,0.04)',
+                      border: `1px solid ${k === 'DEL' ? 'rgba(248,81,73,0.2)' : 'rgba(255,255,255,0.08)'}`,
+                      color: k === 'DEL' ? '#f85149' : '#f0f6fc'
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = k === 'DEL' ? 'rgba(248,81,73,0.16)' : 'rgba(255,255,255,0.1)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = k === 'DEL' ? 'rgba(248,81,73,0.08)' : 'rgba(255,255,255,0.04)')}>
+              {k}
+            </button>
+          ))}
+        </div>
+
+        <button onClick={onCancel} className="w-full py-2 text-sm font-bold" style={{ color: '#484f58' }}>
+          ยกเลิก
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Receipt Modal ────────────────────────────────────────────
+function ReceiptModal({ transfer, onClose }: any) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+         style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)' }}>
+      <div className="glass rounded-3xl p-8 w-full max-w-sm receipt-modal text-center"
+           style={{ boxShadow: '0 8px 64px rgba(0,0,0,0.8), 0 0 0 1px rgba(63,185,80,0.3)' }}>
+        <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center animate-success-pop"
+             style={{ background: 'rgba(63,185,80,0.15)', border: '2px solid rgba(63,185,80,0.4)' }}>
+          <CheckCircle size={36} style={{ color: '#3fb950' }} />
+        </div>
+        <h2 className="font-black text-xl mb-1 text-glow-green" style={{ color: '#3fb950' }}>โอนเงินสำเร็จ!</h2>
+        <p className="text-sm mb-6" style={{ color: '#8b949e' }}>ธุรกรรมได้รับการบันทึกแล้ว</p>
+
+        <div className="rounded-2xl p-5 mb-6 text-left space-y-3"
+             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          {[
+            ['จำนวนเงิน', `฿${Number(transfer.amount).toLocaleString()}`],
+            ['โอนไปยัง', transfer.receiverName],
+            ['เลขบัญชี', transfer.transferTo],
+            ['วันเวลา', new Date().toLocaleString('th-TH')],
+            ['สถานะ', 'สำเร็จ ✓'],
+          ].map(([label, val]) => (
+            <div key={label} className="flex justify-between items-center text-sm">
+              <span style={{ color: '#484f58' }}>{label}</span>
+              <span className="font-bold" style={{ color: label === 'จำนวนเงิน' ? '#f85149' : label === 'สถานะ' ? '#3fb950' : '#f0f6fc' }}>
+                {val}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <button onClick={onClose}
+                className="w-full py-3 rounded-xl font-black text-sm btn-shimmer"
+                style={{ background: 'linear-gradient(135deg, #3fb950, #22863a)', color: 'white', boxShadow: '0 4px 20px rgba(63,185,80,0.3)' }}>
+          ปิดใบเสร็จ
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────
 export default function UserDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [transferLoading, setTransferLoading] = useState(false);
   const [profile, setProfile] = useState<any>(null);
-  
-  // State โอนเงิน
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [transferTo, setTransferTo] = useState("");
   const [amount, setAmount] = useState("");
-  const [statusMsg, setStatusMsg] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [showPin, setShowPin] = useState(false);
+  const [receipt, setReceipt] = useState<any>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const initUser = async () => {
-      // 1. เช็คว่าล็อกอินยัง?
+    const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        window.location.href = "/"; // ถ้าไม่ล็อกอิน ดีดกลับ
-        return;
-      }
-
-      // 2. ค้นหาบัญชีจาก Email (แก้บั๊กสร้างซ้ำตรงนี้)
+      if (!session) { window.location.href = "/"; return; }
       const userEmail = session.user.email;
-      
-      // ใช้ maybeSingle() คือถ้ามีเอามา ถ้าไม่มีคืนค่า null (ไม่ error)
-      let { data: existingUser } = await supabase
-        .from('clients')
-        .select('*')
-        .eq('email', userEmail)
-        .maybeSingle();
 
-      if (existingUser) {
-        // ✅ เจอบัญชีเดิม! โหลดข้อมูลเลย
-        console.log("Welcome back:", existingUser.name);
-        setProfile(existingUser);
+      let { data: existing } = await supabase.from('clients').select('*').eq('email', userEmail).maybeSingle();
+      if (existing) {
+        setProfile(existing);
       } else {
-        // ❌ ไม่เจอ -> สร้างใหม่ (ครั้งแรกครั้งเดียว)
-        console.log("Creating new account for:", userEmail);
         const newAcc = {
           name: session.user.user_metadata.full_name || "ลูกค้า Google",
           email: userEmail,
           account_number: `00${Math.floor(Math.random() * 9)}-${Math.floor(10000 + Math.random() * 90000)}-${Math.floor(10 + Math.random() * 90)}`,
-          balance: 500.00, // แจกเงินเริ่มต้น
+          balance: 500.00,
           status: 'Active',
           region: 'Online'
         };
-        
-        const { data: createdUser, error } = await supabase
-          .from('clients')
-          .insert([newAcc])
-          .select()
-          .single();
-          
-        if (error) console.error("Create Error:", error);
-        setProfile(createdUser);
+        const { data: created } = await supabase.from('clients').insert([newAcc]).select().single();
+        setProfile(created);
       }
       setLoading(false);
     };
-
-    initUser();
+    init();
   }, []);
 
-  const handleTransfer = async () => {
-    if (!amount || !transferTo) return alert("กรอกข้อมูลให้ครบครับ");
+  // Fetch transaction history
+  useEffect(() => {
+    if (!profile) return;
+    const fetchTx = async () => {
+      const { data } = await supabase.from('transactions')
+        .select('*')
+        .or(`sender_id.eq.${profile.id},receiver_id.eq.${profile.id}`)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      setTransactions(data || []);
+    };
+    fetchTx();
+  }, [profile]);
+
+  const handleTransferRequest = () => {
+    if (!amount || !transferTo) return alert("กรอกข้อมูลให้ครบ");
     if (parseFloat(amount) > profile.balance) return alert("เงินไม่พอครับ");
     if (transferTo === profile.account_number) return alert("โอนให้ตัวเองไม่ได้");
+    setShowPin(true);
+  };
 
-    setLoading(true);
+  const handleTransferConfirm = async () => {
+    setShowPin(false);
+    setTransferLoading(true);
     try {
-      // 1. เช็คปลายทาง
       const { data: receiver } = await supabase.from('clients').select('*').eq('account_number', transferTo).single();
       if (!receiver) throw new Error("ไม่พบเลขบัญชีปลายทาง");
 
-      // 2. ตัดเงินเรา + เพิ่มเงินเขา
-      await supabase.from('clients').update({ balance: profile.balance - parseFloat(amount) }).eq('id', profile.id);
-      await supabase.from('clients').update({ balance: receiver.balance + parseFloat(amount) }).eq('id', receiver.id);
-      
-      setIsSuccess(true);
-      setStatusMsg(`โอนเงิน ${amount} บาท ให้ ${receiver.name} สำเร็จ!`);
-      setAmount("");
-      
-      // 3. อัปเดตยอดเงินในหน้าจอทันที
+      const amtNum = parseFloat(amount);
+
+      // Update balances
+      await supabase.from('clients').update({ balance: profile.balance - amtNum }).eq('id', profile.id);
+      await supabase.from('clients').update({ balance: receiver.balance + amtNum }).eq('id', receiver.id);
+
+      // Record transaction
+      await supabase.from('transactions').insert([{
+        sender_id: profile.id,
+        receiver_id: receiver.id,
+        sender_account: profile.account_number,
+        receiver_account: transferTo,
+        amount: amtNum,
+        type: 'Transfer',
+        description: `โอนเงินจาก ${profile.name} ไปยัง ${receiver.name}`,
+        status: 'Success'
+      }]);
+
+      // Refresh profile
       const { data: updatedMe } = await supabase.from('clients').select('*').eq('id', profile.id).single();
       setProfile(updatedMe);
 
-    } catch (error: any) {
-      alert(error.message);
+      // Refresh transactions
+      const { data: txData } = await supabase.from('transactions')
+        .select('*')
+        .or(`sender_id.eq.${profile.id},receiver_id.eq.${profile.id}`)
+        .order('created_at', { ascending: false }).limit(20);
+      setTransactions(txData || []);
+
+      setReceipt({ amount, transferTo, receiverName: receiver.name });
+      setAmount("");
+      setTransferTo("");
+    } catch (err: any) {
+      alert(err.message);
     } finally {
-      setLoading(false);
+      setTransferLoading(false);
     }
+  };
+
+  const copyAccNum = () => {
+    navigator.clipboard.writeText(profile?.account_number || '');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleLogout = async () => {
@@ -100,32 +232,155 @@ export default function UserDashboard() {
     window.location.href = "/";
   };
 
-  if (loading) return <div className="h-screen flex flex-col items-center justify-center text-slate-500 gap-2"><Loader2 className="animate-spin text-blue-600" size={40}/><p>กำลังโหลดข้อมูลบัญชี...</p></div>;
+  if (loading) return (
+    <div className="h-screen flex flex-col items-center justify-center" style={{ background: '#080c14' }}>
+      <div className="animated-bg" />
+      <div className="relative z-10 text-center">
+        <Loader2 size={40} className="animate-spin mx-auto mb-4" style={{ color: '#4f9cf9' }} />
+        <p className="text-sm" style={{ color: '#8b949e' }}>กำลังโหลดข้อมูลบัญชี...</p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-900 pb-10">
-      <header className="bg-blue-600 text-white p-6 rounded-b-3xl shadow-lg">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-2 font-bold text-lg"><Wallet/> WAVY APP</div>
-          <button onClick={handleLogout} className="bg-white/20 p-2 rounded-lg"><LogOut size={20}/></button>
-        </div>
-        <div className="bg-white text-slate-900 p-6 rounded-2xl shadow-xl">
-          <p className="text-slate-400 text-xs font-bold uppercase">ยอดเงินคงเหลือ</p>
-          <h1 className="text-4xl font-bold text-blue-600 my-2">{profile?.balance?.toLocaleString()} <span className="text-sm text-slate-400">THB</span></h1>
-          <div className="border-t pt-4 mt-4 flex justify-between">
-             <div><p className="text-xs text-slate-400">ชื่อบัญชี</p><p className="font-bold">{profile?.name}</p></div>
-             <div className="text-right"><p className="text-xs text-slate-400">เลขบัญชี</p><p className="font-mono font-bold">{profile?.account_number}</p></div>
+    <div className="min-h-screen pb-10" style={{ background: '#080c14' }}>
+      <div className="animated-bg grid-bg" />
+      {showPin && (
+        <PinModal
+          onConfirm={handleTransferConfirm}
+          onCancel={() => setShowPin(false)}
+          amount={amount}
+          receiverName={null}
+        />
+      )}
+      {receipt && <ReceiptModal transfer={receipt} onClose={() => setReceipt(null)} />}
+
+      {/* Header / Balance Card */}
+      <div className="relative z-10 p-5 pb-20" style={{ background: 'linear-gradient(180deg, rgba(59,130,246,0.15) 0%, transparent 100%)' }}>
+        <div className="max-w-md mx-auto">
+          <div className="flex justify-between items-center mb-6 animate-fade-up">
+            <div className="flex items-center gap-2 font-black text-lg" style={{ color: '#f0f6fc' }}>
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+                   style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' }}>
+                <Wallet size={16} className="text-white" />
+              </div>
+              WAVY APP
+            </div>
+            <button onClick={handleLogout}
+                    className="p-2.5 rounded-xl transition-all"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', color: '#8b949e' }}>
+              <LogOut size={18} />
+            </button>
+          </div>
+
+          {/* Balance Card */}
+          <div className="glass-blue rounded-3xl p-6 animate-fade-up stagger-1" style={{ animationFillMode: 'forwards' }}>
+            <p className="text-xs font-bold tracking-widest mb-2" style={{ color: '#8b949e' }}>ยอดเงินคงเหลือ</p>
+            <h1 className="text-5xl font-black mb-1 text-glow-blue" style={{ color: '#4f9cf9' }}>
+              ฿{profile?.balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </h1>
+            <div className="h-px my-4" style={{ background: 'rgba(255,255,255,0.08)' }} />
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-xs mb-1" style={{ color: '#484f58' }}>ชื่อบัญชี</p>
+                <p className="font-bold" style={{ color: '#f0f6fc' }}>{profile?.name}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs mb-1" style={{ color: '#484f58' }}>เลขบัญชี</p>
+                <button onClick={copyAccNum} className="flex items-center gap-1.5 font-mono font-bold text-sm transition-all"
+                        style={{ color: copied ? '#3fb950' : '#4f9cf9' }}>
+                  {profile?.account_number}
+                  {copied ? <CheckCircle size={14} /> : <Copy size={14} />}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <div className="p-6 max-w-md mx-auto mt-4">
-        <h3 className="font-bold text-slate-700 mb-4 flex items-center gap-2"><Send className="text-blue-600"/> โอนเงิน</h3>
-        <div className="bg-white p-6 rounded-2xl shadow-sm border space-y-4">
-          {isSuccess && <div className="bg-green-100 text-green-700 p-3 rounded-lg flex gap-2"><CheckCircle/> {statusMsg}</div>}
-          <input placeholder="เลขบัญชีปลายทาง" className="w-full border p-3 rounded-xl bg-slate-50 font-mono" value={transferTo} onChange={e => setTransferTo(e.target.value)} />
-          <input type="number" placeholder="จำนวนเงิน" className="w-full border p-3 rounded-xl bg-slate-50 font-bold text-lg" value={amount} onChange={e => setAmount(e.target.value)} />
-          <button onClick={handleTransfer} disabled={loading} className="w-full bg-slate-900 text-white p-4 rounded-xl font-bold">{loading ? "กำลังทำรายการ..." : "ยืนยันการโอน"}</button>
+      {/* Transfer Section */}
+      <div className="relative z-10 max-w-md mx-auto px-5 -mt-12">
+        <div className="glass rounded-2xl p-6 mb-6 animate-fade-up stagger-2" style={{ animationFillMode: 'forwards' }}>
+          <h3 className="font-black text-sm mb-4 flex items-center gap-2" style={{ color: '#f0f6fc' }}>
+            <Send size={18} style={{ color: '#4f9cf9' }} />
+            โอนเงิน
+          </h3>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs font-bold tracking-widest mb-2" style={{ color: '#484f58' }}>เลขบัญชีปลายทาง</label>
+              <input
+                placeholder="XXX-XXXXX-XX"
+                className="input-dark font-mono"
+                value={transferTo}
+                onChange={e => setTransferTo(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold tracking-widest mb-2" style={{ color: '#484f58' }}>จำนวนเงิน (THB)</label>
+              <input
+                type="number"
+                placeholder="0.00"
+                className="input-dark"
+                style={{ fontSize: '1.5rem', fontWeight: 900 }}
+                value={amount}
+                onChange={e => setAmount(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={handleTransferRequest}
+              disabled={transferLoading || !amount || !transferTo}
+              className="w-full py-4 rounded-xl font-black text-sm btn-shimmer mt-2 transition-all flex items-center justify-center gap-2"
+              style={{
+                background: transferLoading || !amount || !transferTo
+                  ? 'rgba(255,255,255,0.06)'
+                  : 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                color: transferLoading || !amount || !transferTo ? '#484f58' : 'white',
+                boxShadow: transferLoading || !amount || !transferTo ? 'none' : '0 4px 24px rgba(59,130,246,0.4)',
+                cursor: transferLoading || !amount || !transferTo ? 'not-allowed' : 'pointer'
+              }}>
+              {transferLoading ? <><Loader2 size={18} className="animate-spin" /> กำลังทำรายการ...</> : <><Send size={18} /> ยืนยันโอนเงิน</>}
+            </button>
+          </div>
+        </div>
+
+        {/* Transaction History */}
+        <div className="glass rounded-2xl overflow-hidden animate-fade-up stagger-3" style={{ animationFillMode: 'forwards' }}>
+          <div className="flex items-center gap-2 px-6 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <Clock size={16} style={{ color: '#4f9cf9' }} />
+            <h3 className="font-black text-sm" style={{ color: '#f0f6fc' }}>ประวัติธุรกรรม</h3>
+          </div>
+          {transactions.length === 0 ? (
+            <div className="py-12 text-center text-sm" style={{ color: '#484f58' }}>
+              ยังไม่มีประวัติการทำรายการ
+            </div>
+          ) : transactions.map((tx, i) => {
+            const isSender = tx.sender_id === profile?.id;
+            return (
+              <div key={tx.id} className="flex items-center justify-between px-6 py-4 opacity-0 animate-fade-up"
+                   style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', animationDelay: `${i * 0.05}s`, animationFillMode: 'forwards' }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                       style={{
+                         background: isSender ? 'rgba(248,81,73,0.1)' : 'rgba(63,185,80,0.1)',
+                         border: `1px solid ${isSender ? 'rgba(248,81,73,0.2)' : 'rgba(63,185,80,0.2)'}`
+                       }}>
+                    {isSender
+                      ? <ArrowUpRight size={16} style={{ color: '#f85149' }} />
+                      : <ArrowDownLeft size={16} style={{ color: '#3fb950' }} />}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold" style={{ color: '#f0f6fc' }}>{isSender ? 'โอนออก' : 'รับเงิน'}</p>
+                    <p className="text-xs" style={{ color: '#484f58' }}>
+                      {isSender ? tx.receiver_account : tx.sender_account} · {new Date(tx.created_at).toLocaleDateString('th-TH')}
+                    </p>
+                  </div>
+                </div>
+                <p className="font-black text-sm" style={{ color: isSender ? '#f85149' : '#3fb950' }}>
+                  {isSender ? '-' : '+'}฿{Number(tx.amount).toLocaleString()}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

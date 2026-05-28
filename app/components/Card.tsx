@@ -18,8 +18,8 @@ export default function Card({
   style,
 }: CardProps) {
   const classes = [
-    "bg-white border border-slate-200/80 rounded-xl animate-fade-in-up",
-    elevated ? "shadow-md" : "shadow-sm",
+    "bg-[#131B2E]/90 border border-slate-800/80 rounded-2xl animate-fade-in-up transition-all duration-300 backdrop-blur-md",
+    elevated ? "shadow-sky-500/5 shadow-2xl scale-[1.01]" : "shadow-xl",
     noPadding ? "p-0" : "p-6",
     className,
   ]

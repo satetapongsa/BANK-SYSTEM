@@ -4,7 +4,7 @@ import { useState } from "react";
 import * as storage from "@/app/lib/storage";
 import Card from "@/app/components/Card";
 import Button from "@/app/components/Button";
-import { ArrowLeft, UserPlus, ShieldCheck, Mail, User, Wallet, Globe } from "lucide-react";
+import { ArrowLeft, UserPlus, ShieldCheck, Mail, User, Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function AddClientPage() {
@@ -46,35 +46,35 @@ export default function AddClientPage() {
       {/* Back button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
+        className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-100 transition-colors"
       >
         <ArrowLeft size={16} />
         ย้อนกลับไปยังทะเบียนบัญชี
       </button>
 
       <Card elevated className="relative overflow-hidden">
-        <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-sky-500 to-sky-600" />
+        <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-sky-400 to-indigo-500" />
         
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-sky-50 rounded-xl flex items-center justify-center text-sky-600 border border-sky-100">
+          <div className="w-10 h-10 bg-sky-950/40 rounded-xl flex items-center justify-center text-sky-400 border border-sky-900/30">
             <UserPlus size={20} />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900">เปิดบัญชีลูกค้าใหม่ (Add New Bank Client)</h2>
+            <h2 className="text-lg font-bold text-slate-100">เปิดบัญชีลูกค้าใหม่ (Add New Bank Client)</h2>
             <p className="text-xs font-semibold text-slate-400 mt-0.5">กรอกข้อมูลผู้จดทะเบียนบัญชีด้านล่างให้ครบถ้วนเพื่อส่งประวัติ</p>
           </div>
         </div>
 
-        <hr className="border-slate-100 my-5" />
+        <hr className="border-slate-800/60 my-5" />
 
         {/* Register Account Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Customer Full Name */}
           <div>
             <label className="bank-label">ชื่อ-นามสกุลลูกค้า (Full Name) *</label>
-            <div className="relative rounded-md shadow-xs">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <div className="relative rounded-xl shadow-inner">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                 <User size={16} />
               </div>
               <input
@@ -91,8 +91,8 @@ export default function AddClientPage() {
           {/* Email Address */}
           <div>
             <label className="bank-label">อีเมลติดต่อ (Email Address) *</label>
-            <div className="relative rounded-md shadow-xs">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <div className="relative rounded-xl shadow-inner">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                 <Mail size={16} />
               </div>
               <input
@@ -109,8 +109,8 @@ export default function AddClientPage() {
           {/* Initial Balance */}
           <div>
             <label className="bank-label">ยอดเงินฝากเริ่มต้น (Initial Deposit) *</label>
-            <div className="relative rounded-md shadow-xs">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <div className="relative rounded-xl shadow-inner">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500 pointer-events-none">
                 <span className="text-sm font-semibold">฿</span>
               </div>
               <input
@@ -129,8 +129,8 @@ export default function AddClientPage() {
           {/* Region Location */}
           <div>
             <label className="bank-label">ภูมิภาค / สาขา (Region/Branch) *</label>
-            <div className="relative rounded-md shadow-xs">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <div className="relative rounded-xl shadow-inner">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                 <Globe size={16} />
               </div>
               <input
@@ -144,7 +144,7 @@ export default function AddClientPage() {
             </div>
           </div>
 
-          <hr className="border-slate-100 my-6" />
+          <hr className="border-slate-800/60 my-6" />
 
           {/* Actions */}
           <div className="flex gap-3">
@@ -165,7 +165,7 @@ export default function AddClientPage() {
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
                   กำลังลงทะเบียน...
                 </>
               ) : (

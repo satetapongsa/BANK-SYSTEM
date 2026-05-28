@@ -4,23 +4,23 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-800 antialiased min-h-screen selection:bg-sky-100 selection:text-sky-950;
+    @apply bg-[#0B0F19] text-slate-100 antialiased min-h-screen selection:bg-sky-900/50 selection:text-sky-200;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom Scrollbar for Official Premium Look */
+/* Custom Scrollbar for Dark Premium Look */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-slate-100;
+  @apply bg-[#0B0F19];
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full hover:bg-slate-400 transition-colors;
+  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
 }
 
 /* Base Fade In and Slide Up Animations */
@@ -44,15 +44,6 @@
   }
 }
 
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
 .animate-fade-in-up {
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -61,32 +52,25 @@
   animation: fadeIn 0.3s ease-out both;
 }
 
-/* Stagger Animation delays */
-.stagger-1 { animation-delay: 40ms; }
-.stagger-2 { animation-delay: 80ms; }
-.stagger-3 { animation-delay: 120ms; }
-.stagger-4 { animation-delay: 160ms; }
-.stagger-5 { animation-delay: 200ms; }
-
-/* Custom premium styling for data tables */
+/* Custom premium styling for data tables in dark mode */
 .bank-table-row {
-  @apply transition-colors hover:bg-slate-50/80;
+  @apply transition-colors hover:bg-slate-800/20;
 }
 
-/* Clean status indicators */
+/* Clean status indicators for dark mode */
 .status-pill-active {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/80;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
 }
 
 .status-pill-blocked {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200/80;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20;
 }
 
-/* Input styles for consistent look */
+/* Input styles for dark mode consistent look */
 .bank-input {
-  @apply w-full px-3.5 py-2 text-sm bg-white border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:border-sky-600 focus:ring-1 focus:ring-sky-600 transition-all placeholder:text-slate-400 text-slate-900;
+  @apply w-full px-3.5 py-2 text-sm bg-[#131B2E] border border-slate-800/80 rounded-xl shadow-inner focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all placeholder:text-slate-500 text-slate-100;
 }
 
 .bank-label {
-  @apply block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5;
+  @apply block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5;
 }

@@ -258,8 +258,8 @@ export default function ManageClientPage() {
   if (!client) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
-        <div className="w-10 h-10 border-3 border-sky-500 border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm font-semibold text-slate-400">กำลังดึงข้อมูลบัญชีลูกค้า...</p>
+        <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-semibold text-slate-500">กำลังดึงข้อมูลบัญชีลูกค้า...</p>
       </div>
     );
   }
@@ -276,22 +276,22 @@ export default function ManageClientPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Breadcrumb Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-800 pb-5 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-5 gap-4">
         <div>
           <button
             onClick={() => router.push("/clients")}
-            className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-100 transition-colors mb-2"
+            className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-700 transition-colors mb-2"
           >
             <ArrowLeft size={14} />
             ย้อนกลับไปยังทะเบียนบัญชี
           </button>
-          <h1 className="text-2xl font-black text-slate-100 tracking-tight flex items-center gap-2">
-            <User className="text-sky-400" size={24} />
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+            <User className="text-blue-600" size={24} />
             จัดการรายละเอียดบัญชีรายบุคคล (Account Manager)
           </h1>
         </div>
         <div className="text-right">
-          <span className="text-[10px] font-bold font-mono bg-slate-900 text-slate-400 border border-slate-800/80 px-2.5 py-1 rounded-md">
+          <span className="text-[10px] font-bold font-mono bg-slate-50 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-md">
             ID: {client.id} · ACC NO: {client.account_number}
           </span>
         </div>
@@ -299,46 +299,46 @@ export default function ManageClientPage() {
 
       {/* Top 3 KPI stats cards relating strictly to this user */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <Card className="relative overflow-hidden hover:shadow-sky-500/5" elevated>
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-sky-500" />
+        <Card className="relative overflow-hidden hover:shadow-md" elevated>
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-[#0A2540]" />
           <div className="flex justify-between items-start">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">ยอดเงินคงเหลือในบัญชี</p>
-            <div className="w-7 h-7 bg-sky-950/40 rounded-lg flex items-center justify-center text-sky-400 border border-sky-900/30">
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">ยอดเงินคงเหลือในบัญชี</p>
+            <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 border border-blue-100">
               <DollarSign size={14} />
             </div>
           </div>
-          <p className="text-3xl font-black text-slate-100 mt-2">
+          <p className="text-3xl font-black text-slate-800 mt-2">
             ฿{client.balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </p>
-          <span className="text-[9px] text-slate-500 font-semibold block mt-1">อัปเดตแบบเรียลไทม์ตามธุรกรรม</span>
+          <span className="text-[9px] text-slate-400 font-semibold block mt-1">อัปเดตแบบเรียลไทม์ตามธุรกรรม</span>
         </Card>
 
-        <Card className="relative overflow-hidden hover:shadow-rose-500/5">
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-rose-500" />
+        <Card className="relative overflow-hidden hover:shadow-md">
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-rose-600" />
           <div className="flex justify-between items-start">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">ยอดการโอนออก/เบิกถอน</p>
-            <div className="w-7 h-7 bg-rose-950/40 rounded-lg flex items-center justify-center text-rose-400 border border-rose-900/30">
+            <p className="text-xs font-bold text-slate-550 uppercase tracking-wider">ยอดการโอนออก/เบิกถอน</p>
+            <div className="w-7 h-7 bg-rose-50 rounded-lg flex items-center justify-center text-rose-600 border border-rose-100">
               <TrendingDown size={14} />
             </div>
           </div>
-          <p className="text-3xl font-black text-rose-400 mt-2">
+          <p className="text-3xl font-black text-rose-600 mt-2">
             ฿{totalSent.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </p>
-          <span className="text-[9px] text-slate-500 font-semibold block mt-1">ประวัติการหักบัญชีสะสม</span>
+          <span className="text-[9px] text-slate-400 font-semibold block mt-1">ประวัติการหักบัญชีสะสม</span>
         </Card>
 
-        <Card className="relative overflow-hidden hover:shadow-emerald-500/5">
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-emerald-500" />
+        <Card className="relative overflow-hidden hover:shadow-md">
+          <div className="absolute top-0 inset-x-0 h-[2px] bg-emerald-600" />
           <div className="flex justify-between items-start">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">ยอดการฝากเข้า/รับโอน</p>
-            <div className="w-7 h-7 bg-emerald-950/40 rounded-lg flex items-center justify-center text-emerald-400 border border-emerald-900/30">
+            <p className="text-xs font-bold text-slate-550 uppercase tracking-wider">ยอดการฝากเข้า/รับโอน</p>
+            <div className="w-7 h-7 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 border border-emerald-100">
               <TrendingUp size={14} />
             </div>
           </div>
-          <p className="text-3xl font-black text-emerald-400 mt-2">
+          <p className="text-3xl font-black text-emerald-600 mt-2">
             ฿{totalReceived.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </p>
-          <span className="text-[9px] text-slate-500 font-semibold block mt-1">ประวัติเงินรับสะสม</span>
+          <span className="text-[9px] text-slate-400 font-semibold block mt-1">ประวัติเงินรับสะสม</span>
         </Card>
       </div>
 
@@ -351,8 +351,8 @@ export default function ManageClientPage() {
           {/* Edit Client Information Card */}
           <Card>
             <div className="flex items-center gap-2 mb-6">
-              <Edit3 size={18} className="text-sky-400" />
-              <h2 className="text-sm font-bold text-slate-100">แก้ไขข้อมูลบัญชีผู้จดทะเบียน</h2>
+              <Edit3 size={18} className="text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-800">แก้ไขข้อมูลบัญชีผู้จดทะเบียน</h2>
             </div>
             
             <form onSubmit={handleUpdateProfile} className="space-y-4">
@@ -360,7 +360,7 @@ export default function ManageClientPage() {
                 <div>
                   <label className="bank-label">ชื่อบัญชีลูกค้า *</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
                       <User size={14} />
                     </div>
                     <input
@@ -376,7 +376,7 @@ export default function ManageClientPage() {
                 <div>
                   <label className="bank-label">อีเมลติดต่อบัญชี *</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
                       <Mail size={14} />
                     </div>
                     <input
@@ -392,14 +392,14 @@ export default function ManageClientPage() {
                 <div>
                   <label className="bank-label">เลขที่บัญชี (คงที่ระบบ) *</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
                       <Hash size={14} />
                     </div>
                     <input
                       type="text"
                       disabled
                       value={client.account_number}
-                      className="bank-input pl-9 bg-slate-900/50 cursor-not-allowed text-slate-500 border-slate-800/80"
+                      className="bank-input pl-9 bg-slate-50 cursor-not-allowed text-slate-400 border-slate-200"
                     />
                   </div>
                 </div>
@@ -407,7 +407,7 @@ export default function ManageClientPage() {
                 <div>
                   <label className="bank-label">ภูมิภาค / สาขาจัดทำ *</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
                       <Globe size={14} />
                     </div>
                     <input
@@ -423,7 +423,7 @@ export default function ManageClientPage() {
                 <div className="sm:col-span-2">
                   <label className="bank-label">ปรับเปลี่ยนเงินคงเหลือบัญชีโดยตรง (ยอดคงเหลือปัจจุบัน) *</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500 pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 pointer-events-none">
                       <span className="text-xs font-semibold">฿</span>
                     </div>
                     <input
@@ -435,16 +435,16 @@ export default function ManageClientPage() {
                       className="bank-input pl-8 font-mono text-sm"
                     />
                   </div>
-                  <span className="text-[10px] text-rose-400 font-bold block mt-1.5">
+                  <span className="text-[10px] text-rose-650 font-bold block mt-1.5">
                     ⚠️ คำเตือน: การเปลี่ยนตัวเลขยอดคงเหลือโดยตรงจะไม่ถูกบันทึกเป็นรายการธุรกรรมฝาก/ถอนลงในประวัติบัญชี
                   </span>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+              <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
                 <div>
                   {saveInfoOk && (
-                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 animate-fade-in">
+                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1.5 animate-fade-in">
                       <ShieldCheck size={14} />
                       บันทึกข้อมูลเรียบร้อยแล้ว!
                     </span>
@@ -459,18 +459,18 @@ export default function ManageClientPage() {
 
           {/* Bank Operations Card: Deposit / Withdraw / Transfer */}
           <Card className="relative">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-800/80 gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-3 mb-6">
               <div className="flex items-center gap-2">
-                <Landmark size={18} className="text-sky-400" />
-                <h2 className="text-sm font-bold text-slate-100">ธุรกรรมเคาน์เตอร์บริการ (Bank Services Console)</h2>
+                <Landmark size={18} className="text-blue-600" />
+                <h2 className="text-sm font-bold text-slate-800">ธุรกรรมเคาน์เตอร์บริการ (Bank Services Console)</h2>
               </div>
               
               {/* Tab Navigation selectors */}
-              <div className="inline-flex rounded-xl bg-slate-900/60 p-0.5 border border-slate-800/60">
+              <div className="inline-flex rounded-xl bg-slate-100 p-0.5 border border-slate-200">
                 <button
                   onClick={() => { setActionTab("deposit"); setAmount(""); }}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
-                    actionTab === "deposit" ? "bg-[#131B2E] text-sky-400 shadow-md" : "text-slate-400 hover:text-slate-200"
+                    actionTab === "deposit" ? "bg-white text-blue-700 shadow-sm border border-slate-200/40" : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
                   <Plus size={11} className="inline mr-1" />
@@ -479,7 +479,7 @@ export default function ManageClientPage() {
                 <button
                   onClick={() => { setActionTab("withdraw"); setAmount(""); }}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
-                    actionTab === "withdraw" ? "bg-[#131B2E] text-sky-400 shadow-md" : "text-slate-400 hover:text-slate-200"
+                    actionTab === "withdraw" ? "bg-white text-blue-700 shadow-sm border border-slate-200/40" : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
                   <Minus size={11} className="inline mr-1" />
@@ -488,7 +488,7 @@ export default function ManageClientPage() {
                 <button
                   onClick={() => { setActionTab("transfer"); setAmount(""); }}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
-                    actionTab === "transfer" ? "bg-[#131B2E] text-sky-400 shadow-md" : "text-slate-400 hover:text-slate-200"
+                    actionTab === "transfer" ? "bg-white text-blue-700 shadow-sm border border-slate-200/40" : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
                   <ArrowRightLeft size={11} className="inline mr-1" />
@@ -504,7 +504,7 @@ export default function ManageClientPage() {
                   <select
                     value={receiverId}
                     onChange={(e) => setReceiverId(e.target.value)}
-                    className="w-full px-3 py-2.5 text-sm bg-[#131B2E] border border-slate-800/80 rounded-xl shadow-inner focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all font-bold text-slate-100"
+                    className="w-full px-3 py-2.5 text-sm bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all font-bold text-slate-800"
                   >
                     <option value="">-- โปรดเลือกบัญชีผู้รับเงินโอน --</option>
                     {allClients.map((c) => (
@@ -520,7 +520,7 @@ export default function ManageClientPage() {
                 <div className="sm:col-span-1">
                   <label className="bank-label">จำนวนเงินดำเนินการ *</label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 pointer-events-none">
                       <span className="text-xs font-semibold">฿</span>
                     </div>
                     <input
@@ -549,8 +549,8 @@ export default function ManageClientPage() {
 
               {/* Toast alert confirmation */}
               {actionMessage && (
-                <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-xs font-bold text-emerald-400 rounded-xl flex items-center gap-2 animate-fade-in shadow-md">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                <div className="p-3 bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-700 rounded-xl flex items-center gap-2 animate-fade-in shadow-sm">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                   {actionMessage}
                 </div>
               )}
@@ -582,20 +582,20 @@ export default function ManageClientPage() {
           {/* Account Status Card */}
           <Card>
             <div className="flex items-center gap-2 mb-4">
-              <ShieldCheck size={18} className="text-sky-400" />
-              <h2 className="text-sm font-bold text-slate-100">สถานะและความปลอดภัยบัญชี</h2>
+              <ShieldCheck size={18} className="text-blue-600" />
+              <h2 className="text-sm font-bold text-slate-800">สถานะและความปลอดภัยบัญชี</h2>
             </div>
 
             <div className={`p-4 rounded-xl text-center border mb-4 flex flex-col items-center justify-center ${
               client.status === "Active" 
-                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" 
-                : "bg-rose-500/10 border-rose-500/20 text-rose-400"
+                ? "bg-emerald-50 border-emerald-200/60 text-emerald-800" 
+                : "bg-rose-50 border-rose-200/60 text-rose-800"
             }`}>
               <div className={`w-2.5 h-2.5 rounded-full animate-pulse mb-1.5 ${
-                client.status === "Active" ? "bg-emerald-450" : "bg-rose-450"
+                client.status === "Active" ? "bg-emerald-500" : "bg-rose-500"
               }`} />
               <p className="text-lg font-black">{client.status === "Active" ? "สถานะ: ปกติ (Active)" : "สถานะ: ระงับ (Blocked)"}</p>
-              <p className="text-[10px] text-slate-400 mt-1">
+              <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">
                 {client.status === "Active" ? "บัญชีนี้สามารถโอนเงิน ฝากเงิน หรือดำเนินกิจกรรมทั่วไปได้ปกติ" : "บัญชีนี้ถูกอายัด ไม่สามารถเบิกถอนหรือรับโอนเงินได้"}
               </p>
             </div>
@@ -605,8 +605,8 @@ export default function ManageClientPage() {
               onClick={toggleStatus}
               className={`w-full font-bold flex items-center justify-center gap-2 ${
                 client.status === "Active"
-                  ? "border-rose-900/40 text-rose-400 hover:bg-rose-950/20"
-                  : "border-emerald-900/40 text-emerald-400 hover:bg-emerald-950/20"
+                  ? "border-rose-200 text-rose-600 hover:bg-rose-50"
+                  : "border-emerald-200 text-emerald-600 hover:bg-emerald-50"
               }`}
             >
               {client.status === "Active" ? (
@@ -624,14 +624,14 @@ export default function ManageClientPage() {
           </Card>
 
           {/* Danger Zone Card */}
-          <Card className="border-rose-900/40 relative overflow-hidden bg-rose-950/5">
+          <Card className="border-rose-200/65 relative overflow-hidden bg-rose-50/20">
             <div className="absolute top-0 inset-x-0 h-[2px] bg-rose-600" />
             <div className="flex items-center gap-2 mb-3">
-              <AlertOctagon size={18} className="text-rose-400" />
-              <h2 className="text-sm font-bold text-rose-300">พื้นที่อันตราย (Danger Zone)</h2>
+              <AlertOctagon size={18} className="text-rose-700" />
+              <h2 className="text-sm font-bold text-rose-700">พื้นที่อันตราย (Danger Zone)</h2>
             </div>
             
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed font-semibold">
+            <p className="text-xs text-slate-500 mb-4 leading-relaxed font-semibold">
               การสั่งลบบัญชีลูกค้ารายนี้จะเป็นการ **ลบข้อมูลถาวรอย่างสมบูรณ์** รวมถึงเลขที่บัญชีและรายการธุรกรรมการเงินที่เกี่ยวข้องทั้งหมดออกจากระบบ
             </p>
 
@@ -646,19 +646,19 @@ export default function ManageClientPage() {
           </Card>
 
           {/* Quick System Info block */}
-          <Card className="bg-slate-900/50 border-slate-800/80 text-slate-100 relative overflow-hidden font-mono text-xs">
-            <div className="absolute top-0 right-0 p-3 opacity-5">
+          <Card className="bg-slate-50 border-slate-200 text-slate-700 relative overflow-hidden font-mono text-xs">
+            <div className="absolute top-0 right-0 p-3 opacity-[0.03] text-slate-900">
               <Landmark size={80} />
             </div>
             <div className="relative z-10 space-y-2.5">
-              <p className="font-bold text-sm tracking-wider text-sky-400 flex items-center gap-1.5">
+              <p className="font-bold text-sm tracking-wider text-[#0A2540] flex items-center gap-1.5">
                 <Landmark size={14} />
                 ระบบเซิร์ฟเวอร์หลัก (DB)
               </p>
-              <div className="border-t border-slate-850 my-2 pt-2 space-y-1.5">
-                <p className="text-slate-400">การเชื่อมต่อ: <span className="text-emerald-400 font-bold">SECURE (TLS/256)</span></p>
-                <p className="text-slate-400">ฐานข้อมูล: <span className="text-emerald-400 font-bold">LocalStorage (Synced)</span></p>
-                <p className="text-slate-400">ประวัติธุรกรรมบัญชีนี้: <span className="text-sky-450 font-bold">{transactions.length} รายการ</span></p>
+              <div className="border-t border-slate-200 my-2 pt-2 space-y-1.5">
+                <p className="text-slate-500">การเชื่อมต่อ: <span className="text-emerald-700 font-bold">SECURE (TLS/256)</span></p>
+                <p className="text-slate-500">ฐานข้อมูล: <span className="text-emerald-700 font-bold">LocalStorage (Synced)</span></p>
+                <p className="text-slate-500">ประวัติธุรกรรมบัญชีนี้: <span className="text-blue-600 font-bold">{transactions.length} รายการ</span></p>
               </div>
             </div>
           </Card>
@@ -668,12 +668,12 @@ export default function ManageClientPage() {
 
       {/* Dynamic Specific Client Transaction History Table */}
       <Card noPadding className="overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-800/80 bg-slate-900/30 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <History size={18} className="text-sky-400" />
-            <h2 className="text-sm font-bold text-slate-100">ประวัติธุรกรรมย้อนหลังรายบัญชี (Transaction Log)</h2>
+            <History size={18} className="text-blue-600" />
+            <h2 className="text-sm font-bold text-slate-800">ประวัติธุรกรรมย้อนหลังรายบัญชี (Transaction Log)</h2>
           </div>
-          <span className="text-xs font-bold text-sky-400 bg-sky-950/40 border border-sky-900/30 px-2.5 py-0.5 rounded-full">
+          <span className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full">
             {transactions.length} รายการ
           </span>
         </div>
@@ -681,40 +681,40 @@ export default function ManageClientPage() {
         {transactions.length === 0 ? (
           <div className="px-6 py-16 text-center">
             <div className="flex flex-col items-center justify-center gap-2">
-              <History size={36} className="text-slate-700" />
-              <p className="text-sm font-semibold text-slate-500">ยังไม่มีประวัติการโอนเงิน ฝาก หรือถอนเงิน สำหรับบัญชีลูกค้ารายนี้</p>
+              <History size={36} className="text-slate-300" />
+              <p className="text-sm font-semibold text-slate-400">ยังไม่มีประวัติการโอนเงิน ฝาก หรือถอนเงิน สำหรับบัญชีลูกค้ารายนี้</p>
             </div>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-900/50 border-b border-slate-800/80">
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-450 uppercase tracking-wider">วัน-เวลาทำรายการ</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-450 uppercase tracking-wider">ประเภทรายการ</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-450 uppercase tracking-wider">คำอธิบายธุรกรรม (Description)</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-450 uppercase tracking-wider">บัญชีต้นทาง (From)</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-450 uppercase tracking-wider">บัญชีปลายทาง (To)</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-450 uppercase tracking-wider text-right">จำนวนเงิน (บาท)</th>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-550 uppercase tracking-wider">วัน-เวลาทำรายการ</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-550 uppercase tracking-wider">ประเภทรายการ</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-550 uppercase tracking-wider">คำอธิบายธุรกรรม (Description)</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-550 uppercase tracking-wider">บัญชีต้นทาง (From)</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-550 uppercase tracking-wider">บัญชีปลายทาง (To)</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-550 uppercase tracking-wider text-right">จำนวนเงิน (บาท)</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-100">
                 {transactions.map((t) => {
                   const isSender = t.sender_id === clientId;
                   return (
                     <tr key={t.id} className="bank-table-row">
-                      <td className="px-6 py-4 text-xs font-medium text-slate-400">
+                      <td className="px-6 py-4 text-xs font-medium text-slate-500">
                         {new Date(t.created_at).toLocaleString("th-TH")}
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                           t.type === "Deposit"
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                             : t.type === "Withdraw"
-                            ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                            ? "bg-rose-50 text-rose-700 border-rose-100"
                             : isSender
-                            ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                            : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            ? "bg-rose-50 text-rose-700 border-rose-100"
+                            : "bg-emerald-50 text-emerald-700 border-emerald-100"
                         }`}>
                           {t.type === "Deposit" ? (
                             <><ArrowDownLeft size={10} /> ฝากเงิน</>
@@ -727,19 +727,19 @@ export default function ManageClientPage() {
                           )}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-xs font-semibold text-slate-350 max-w-[240px] truncate" title={t.description}>
+                      <td className="px-6 py-4 text-xs font-semibold text-slate-600 max-w-[240px] truncate" title={t.description}>
                         {t.description || "—"}
                       </td>
-                      <td className="px-6 py-4 font-mono text-xs font-bold text-slate-400">{t.sender_account || "—"}</td>
-                      <td className="px-6 py-4 font-mono text-xs font-bold text-slate-400">{t.receiver_account || "—"}</td>
+                      <td className="px-6 py-4 font-mono text-xs font-bold text-slate-500">{t.sender_account || "—"}</td>
+                      <td className="px-6 py-4 font-mono text-xs font-bold text-slate-500">{t.receiver_account || "—"}</td>
                       <td className={`px-6 py-4 text-sm font-bold text-right ${
                         t.type === "Deposit" 
-                          ? "text-emerald-400" 
+                          ? "text-emerald-600" 
                           : t.type === "Withdraw" 
-                          ? "text-rose-400" 
+                          ? "text-rose-600" 
                           : isSender 
-                          ? "text-rose-400" 
-                          : "text-emerald-400"
+                          ? "text-rose-600" 
+                          : "text-emerald-600"
                       }`}>
                         {t.type === "Withdraw" || isSender ? "-" : "+"}฿{Number(t.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                       </td>

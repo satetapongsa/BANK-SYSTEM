@@ -39,13 +39,13 @@ export default function TransactionsPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-800 pb-5 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-5 gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-100 tracking-tight flex items-center gap-2">
-            <ArrowLeftRight className="text-sky-400" size={24} />
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+            <ArrowLeftRight className="text-blue-600" size={24} />
             บันทึกธุรกรรมทั้งหมดในระบบ (Transactions Log)
           </h1>
-          <p className="text-xs font-semibold text-slate-400 mt-1">
+          <p className="text-xs font-semibold text-slate-500 mt-1">
             รายงานประวัติการ ฝากเงิน ถอนเงิน และโอนเงินของทุกบัญชีลูกค้าใน WAVY BANK ({transactions.length} รายการ)
           </p>
         </div>
@@ -53,7 +53,7 @@ export default function TransactionsPage() {
 
       {/* Search and Filters */}
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+        <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
           <Search size={16} />
         </div>
         <input
@@ -70,8 +70,8 @@ export default function TransactionsPage() {
         {filtered.length === 0 ? (
           <div className="px-6 py-16 text-center">
             <div className="flex flex-col items-center justify-center gap-2">
-              <ArrowLeftRight size={40} className="text-slate-700" />
-              <p className="text-sm font-semibold text-slate-500">
+              <ArrowLeftRight size={40} className="text-slate-300" />
+              <p className="text-sm font-semibold text-slate-400">
                 {search ? "ไม่พบรายการประวัติธุรกรรมตรงกับที่ค้นหา" : "ยังไม่มีบันทึกรายการธุรกรรมภายในระบบธนาคาร"}
               </p>
             </div>
@@ -80,40 +80,40 @@ export default function TransactionsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-900/50 border-b border-slate-800/80">
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-wider">วัน-เวลาทำธุรกรรม</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-wider">บัญชีต้นทาง (From)</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-wider">บัญชีปลายทาง (To)</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-wider">ประเภท</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-wider">รายละเอียดอ้างอิง (Description)</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">จำนวนเงิน (บาท)</th>
-                  <th className="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">การดำเนินการ</th>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">วัน-เวลาทำธุรกรรม</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">บัญชีต้นทาง (From)</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">บัญชีปลายทาง (To)</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">ประเภท</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">รายละเอียดอ้างอิง (Description)</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">จำนวนเงิน (บาท)</th>
+                  <th className="px-6 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">การดำเนินการ</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60">
+              <tbody className="divide-y divide-slate-100">
                 {filtered.map((t) => (
                   <tr key={t.id} className="bank-table-row">
-                    <td className="px-6 py-4 text-xs font-semibold text-slate-400 whitespace-nowrap">
+                    <td className="px-6 py-4 text-xs font-semibold text-slate-500 whitespace-nowrap">
                       {new Date(t.created_at).toLocaleString("th-TH")}
                     </td>
-                    <td className="px-6 py-4 font-mono text-xs font-bold text-slate-350">{t.sender_account ?? "—"}</td>
-                    <td className="px-6 py-4 font-mono text-xs font-bold text-slate-350">{t.receiver_account ?? "—"}</td>
+                    <td className="px-6 py-4 font-mono text-xs font-bold text-slate-650">{t.sender_account ?? "—"}</td>
+                    <td className="px-6 py-4 font-mono text-xs font-bold text-slate-650">{t.receiver_account ?? "—"}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                         t.type === "Deposit"
-                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-100"
                           : t.type === "Withdraw"
-                          ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                          : "bg-sky-500/10 text-sky-400 border-sky-500/20"
+                          ? "bg-rose-50 text-rose-700 border-rose-100"
+                          : "bg-blue-50 text-blue-700 border-blue-100"
                       }`}>
                         {t.type === "Deposit" ? "ฝากเงิน" : t.type === "Withdraw" ? "ถอนเงิน" : "โอนเงิน"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-xs font-semibold text-slate-400 max-w-[200px] truncate" title={t.description}>
+                    <td className="px-6 py-4 text-xs font-semibold text-slate-500 max-w-[200px] truncate" title={t.description}>
                       {t.description || "—"}
                     </td>
                     <td className={`px-6 py-4 text-sm font-bold text-right ${
-                      t.type === "Deposit" ? "text-emerald-400" : t.type === "Withdraw" ? "text-rose-400" : "text-sky-400"
+                      t.type === "Deposit" ? "text-emerald-600" : t.type === "Withdraw" ? "text-rose-600" : "text-blue-600"
                     } whitespace-nowrap`}>
                       {t.type === "Withdraw" ? "-" : "+"}฿{Number(t.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>

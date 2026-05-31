@@ -13,11 +13,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-sky-500 hover:bg-sky-600 text-slate-950 border border-transparent shadow-md shadow-sky-500/10 focus:ring-sky-500",
-  secondary: "bg-[#131B2E] hover:bg-slate-800 text-slate-200 border border-slate-800 shadow-md focus:ring-slate-700",
-  success: "bg-emerald-600 hover:bg-emerald-700 text-white border border-transparent shadow-md focus:ring-emerald-500",
-  danger: "bg-rose-600 hover:bg-rose-700 text-white border border-transparent shadow-md shadow-rose-600/10 focus:ring-rose-500",
-  accent: "bg-slate-100 hover:bg-white text-slate-950 border border-transparent shadow-md focus:ring-slate-200",
+  primary: "bg-[#0A2540] hover:bg-[#061727] text-white border border-transparent shadow-sm focus:ring-[#0A2540]",
+  secondary: "bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm focus:ring-slate-200",
+  success: "bg-emerald-600 hover:bg-emerald-700 text-white border border-transparent shadow-sm focus:ring-emerald-500",
+  danger: "bg-rose-600 hover:bg-rose-700 text-white border border-transparent shadow-sm focus:ring-rose-500",
+  accent: "bg-slate-100 hover:bg-slate-200 text-slate-800 border border-transparent shadow-sm focus:ring-slate-350",
 };
 
 const sizeClasses: Record<string, string> = {
@@ -35,7 +35,7 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const classes = [
-    "inline-flex items-center justify-center gap-1.5 font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0B0F19] disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100 active:scale-98",
+    "inline-flex items-center justify-center gap-1.5 font-bold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100 active:scale-98",
     variantClasses[variant],
     sizeClasses[size],
     iconOnly ? "p-2 aspect-square" : "",

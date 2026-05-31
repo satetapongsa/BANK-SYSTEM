@@ -4,23 +4,23 @@
 
 @layer base {
   body {
-    @apply bg-[#0B0F19] text-slate-100 antialiased min-h-screen selection:bg-sky-900/50 selection:text-sky-200;
+    @apply bg-[#F8FAFC] text-slate-800 antialiased min-h-screen selection:bg-blue-100 selection:text-blue-900;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom Scrollbar for Dark Premium Look */
+/* Custom Scrollbar for Premium Light Look */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-[#0B0F19];
+  @apply bg-[#F8FAFC];
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }
 
 /* Base Fade In and Slide Up Animations */
@@ -52,25 +52,25 @@
   animation: fadeIn 0.3s ease-out both;
 }
 
-/* Custom premium styling for data tables in dark mode */
+/* Custom premium styling for data tables in light mode */
 .bank-table-row {
-  @apply transition-colors hover:bg-slate-800/20;
+  @apply transition-colors hover:bg-slate-50/80;
 }
 
-/* Clean status indicators for dark mode */
+/* Clean status indicators for light mode */
 .status-pill-active {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60;
 }
 
 .status-pill-blocked {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/60;
 }
 
-/* Input styles for dark mode consistent look */
+/* Input styles for light mode consistent look */
 .bank-input {
-  @apply w-full px-3.5 py-2 text-sm bg-[#131B2E] border border-slate-800/80 rounded-xl shadow-inner focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all placeholder:text-slate-500 text-slate-100;
+  @apply w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all placeholder:text-slate-400 text-slate-800 font-medium;
 }
 
 .bank-label {
-  @apply block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5;
+  @apply block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5;
 }

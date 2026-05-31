@@ -1,8 +1,8 @@
 // app/components/NavBar.tsx
 "use client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, ArrowLeftRight, Settings, Waves, LogOut } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { LayoutDashboard, Users, ArrowLeftRight, Settings, Waves } from "lucide-react";
 
 const links = [
   { href: "/overview", label: "ภาพรวมระบบ", icon: LayoutDashboard },
@@ -13,15 +13,9 @@ const links = [
 
 export default function NavBar() {
   const pathname = usePathname();
-  const router = useRouter();
 
-  // If on login page, do not render navigation bar at all
+  // If on index loading page, do not render navigation bar at all
   if (pathname === "/") return null;
-
-  const handleLogout = () => {
-    localStorage.removeItem("isAdmin");
-    router.push("/");
-  };
 
   return (
     <nav className="fixed top-0 inset-x-0 z-40 bg-white/95 border-b border-slate-200/80 shadow-sm backdrop-blur-md">
@@ -63,24 +57,15 @@ export default function NavBar() {
             </div>
           </div>
 
-          {/* Right: User Profile & Logout */}
+          {/* Right: User Profile */}
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-200">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               <div className="text-left">
                 <p className="text-[10px] font-bold text-slate-555 leading-none">ผู้ดูแลระบบ (Admin)</p>
                 <span className="text-[9px] text-emerald-600 font-bold block mt-0.5">Console Online</span>
               </div>
             </div>
-
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors border border-transparent hover:border-rose-100"
-              title="ออกจากระบบ"
-            >
-              <LogOut size={16} />
-              <span className="hidden sm:inline">ออกจากระบบ</span>
-            </button>
           </div>
         </div>
       </div>

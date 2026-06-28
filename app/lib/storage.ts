@@ -74,8 +74,24 @@ function transliterateToEng(thaiName: string): string {
   return map[thaiName] || "user";
 }
 
-/** Generates exactly 50 distinct clients with varying details, branch codes, addresses, and 10-digit account numbers */
+/** Generates Owner account and exactly 50 distinct clients with varying details */
 function generate50Clients(): Client[] {
+  const clients: Client[] = [];
+
+  // 1. Add Owner/Admin account at index 0 (ID: 777)
+  clients.push({
+    id: 777,
+    name: "ผู้ดูแลระบบ WAVY BANK (Owner)",
+    email: "owner@wavybank.com",
+    phone: "089-777-7777",
+    address: "สำนักงานใหญ่ WAVY BANK กรุงเทพมหานคร",
+    branch_code: "101",
+    account_number: "1017777777",
+    balance: 100000000.00, // 100,000,000.00 Baht
+    status: "Active",
+    region: "สำนักงานใหญ่ (ปทุมวัน)",
+  });
+
   const firstNames = [
     "สมชาย", "สมหญิง", "เกียรติศักดิ์", "นงนุช", "ประเสริฐ", "อรทัย", "วิชัย", "ศิริพร", "สุรพล", "พัชรา",
     "ธนากร", "กนกวรรณ", "อภิชาติ", "วรรณภา", "มานพ", "ปิยะนุช", "ชาญชัย", "วลัยพร", "ธีรพล", "รุ่งนภา",
@@ -99,7 +115,6 @@ function generate50Clients(): Client[] {
   ];
   const streets = ["ถนนสุขุมวิท", "ถนนพหลโยธิน", "ถนนเพชรเกษม", "ถนนมิตรภาพ", "ถนนราชดำเนิน", "ถนนสาทร", "ถนนพระราม 9"];
 
-  const clients: Client[] = [];
   for (let i = 0; i < 50; i++) {
     const fn = firstNames[i];
     const ln = lastNames[i];
@@ -114,10 +129,7 @@ function generate50Clients(): Client[] {
     const address = `บ้านเลขที่ ${houseNo} ${street} ต.ในเมือง อ.เมือง จ.${loc.province} ${10000 + i * 73}`;
     
     // Generate unique 10-digit account number starting with a branch code prefix
-    // e.g. "101" + unique 7-digit value (1000000 + i * 15309)
     const accNum = `${loc.branchCode}${Math.floor(1000000 + i * 15309)}`;
-    
-    // Initial balance ranges from 5,000 to 1,500,000 Baht
     const balance = Math.floor(5000 + Math.pow(i, 2.5) * 80 + (i % 7) * 2300);
 
     clients.push({
@@ -153,6 +165,11 @@ export function getClients(): Client[] {
 /** Save the full client list */
 export function setClients(clients: Client[]) {
   persist(CLIENTS_KEY, clients);
+}
+
+/** Get the Owner's Bank Account specifically */
+export function getOwnerAccount(): Client | undefined {
+  return findClient(c => c.account_number === "1017777777");
 }
 
 /** Find a client by a predicate */

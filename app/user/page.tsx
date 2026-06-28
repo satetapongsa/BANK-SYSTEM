@@ -170,7 +170,10 @@ export default function UserDashboard() {
 
   const handleTransferRequest = () => {
     if (!amount || !transferTo) return alert("กรอกข้อมูลให้ครบ");
-    if (parseFloat(amount) > profile.balance) return alert("เงินไม่พอครับ");
+    const amtNum = parseFloat(amount);
+    const isOwner = profile.account_number === "1017777777";
+    const fee = isOwner ? 0 : 1;
+    if (amtNum + fee > profile.balance) return alert(`ยอดเงินในบัญชีไม่เพียงพอ (ต้องครอบคลุมค่าธรรมเนียมระบบ ${fee} บาท)`);
     if (transferTo === profile.account_number) return alert("โอนให้ตัวเองไม่ได้");
     setShowPin(true);
   };
@@ -181,10 +184,24 @@ export default function UserDashboard() {
     try {
       const receiver = storage.findClient(c => c.account_number === transferTo);
       if (!receiver) throw new Error("ไม่พบเลขบัญชีปลายทาง");
+      
       const amtNum = parseFloat(amount);
+      const isOwner = profile.account_number === "1017777777";
+      const fee = isOwner ? 0 : 1;
+      const totalDeduction = amtNum + fee;
+
       // Update balances
-      storage.updateClient(profile.id, { balance: profile.balance - amtNum });
+      storage.updateClient(profile.id, { balance: profile.balance - totalDeduction });
       storage.updateClient(receiver.id, { balance: receiver.balance + amtNum });
+      
+      // Route fee to owner
+      if (fee > 0) {
+        const owner = storage.getOwnerAccount();
+        if (owner) {
+          storage.updateClient(owner.id, { balance: owner.balance + fee });
+        }
+      }
+
       // Record transaction
       storage.addTransaction({
         sender_id: profile.id,
@@ -193,7 +210,7 @@ export default function UserDashboard() {
         receiver_account: transferTo,
         amount: amtNum,
         type: 'Transfer',
-        description: `โอนเงินจาก ${profile.name} ไปยัง ${receiver.name}`,
+        description: `โอนเงินจาก ${profile.name} ไปยัง ${receiver.name}` + (fee > 0 ? " (หักค่าธรรมเนียมระบบ 1 บาท)" : ""),
         status: 'Success'
       });
 

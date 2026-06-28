@@ -125,12 +125,28 @@ export default function ManageClientPage() {
     }
     if (!client) return;
 
-    setActionLoading(true);
     const depositAmt = parseFloat(amount);
+    const isOwner = client.account_number === "1017777777";
+    const fee = isOwner ? 0 : 1;
 
-    // Update balance
-    const newBalance = client.balance + depositAmt;
+    if (depositAmt < fee) {
+      alert(`จำนวนเงินฝากต้องไม่ต่ำกว่า ${fee} บาท (เนื่องจากมีค่าธรรมเนียมระบบ ${fee} บาท)`);
+      return;
+    }
+
+    setActionLoading(true);
+
+    // Update balance: add deposit and deduct fee
+    const newBalance = client.balance + depositAmt - fee;
     storage.updateClient(clientId, { balance: newBalance });
+
+    // Route fee to owner
+    if (fee > 0) {
+      const owner = storage.getOwnerAccount();
+      if (owner) {
+        storage.updateClient(owner.id, { balance: owner.balance + fee });
+      }
+    }
 
     // Add transaction log
     storage.addTransaction({
@@ -138,9 +154,9 @@ export default function ManageClientPage() {
       sender_account: "เงินสดเคาน์เตอร์ธนาคาร (CASH)",
       receiver_id: clientId,
       receiver_account: client.account_number,
-      amount: depositAmt,
+      amount: depositAmt - fee,
       type: "Deposit",
-      description: description || "รายการฝากเงินสดผ่านเคาน์เตอร์บริการโดยผู้ดูแลระบบ"
+      description: (description || "รายการฝากเงินสดผ่านเคาน์เตอร์บริการโดยผู้ดูแลระบบ") + (fee > 0 ? " (หักค่าธรรมเนียมระบบ 1 บาท)" : "")
     });
 
     setTimeout(() => {
@@ -162,14 +178,26 @@ export default function ManageClientPage() {
     if (!client) return;
 
     const withdrawAmt = parseFloat(amount);
-    if (client.balance < withdrawAmt) {
-      alert("ยอดคงเหลือในบัญชีไม่เพียงพอสำหรับการทำรายการถอนเงินนี้");
+    const isOwner = client.account_number === "1017777777";
+    const fee = isOwner ? 0 : 1;
+    const totalDeduction = withdrawAmt + fee;
+
+    if (client.balance < totalDeduction) {
+      alert(`ยอดคงเหลือในบัญชีไม่เพียงพอสำหรับการทำรายการ (ต้องการยอดครอบคลุมค่าธรรมเนียมระบบ ${fee} บาท)`);
       return;
     }
 
     setActionLoading(true);
-    const newBalance = client.balance - withdrawAmt;
+    const newBalance = client.balance - totalDeduction;
     storage.updateClient(clientId, { balance: newBalance });
+
+    // Route fee to owner
+    if (fee > 0) {
+      const owner = storage.getOwnerAccount();
+      if (owner) {
+        storage.updateClient(owner.id, { balance: owner.balance + fee });
+      }
+    }
 
     // Add transaction log
     storage.addTransaction({
@@ -179,7 +207,7 @@ export default function ManageClientPage() {
       receiver_account: "เบิกถอนเงินสด (CASH_OUT)",
       amount: withdrawAmt,
       type: "Withdraw",
-      description: description || "รายการถอนเงินสดผ่านเคาน์เตอร์บริการโดยผู้ดูแลระบบ"
+      description: (description || "รายการถอนเงินสดผ่านเคาน์เตอร์บริการโดยผู้ดูแลระบบ") + (fee > 0 ? " (หักค่าธรรมเนียมระบบ 1 บาท)" : "")
     });
 
     setTimeout(() => {
@@ -205,8 +233,12 @@ export default function ManageClientPage() {
     if (!client) return;
 
     const transferAmt = parseFloat(amount);
-    if (client.balance < transferAmt) {
-      alert("ยอดเงินคงเหลือในบัญชีไม่เพียงพอสำหรับการโอน");
+    const isOwner = client.account_number === "1017777777";
+    const fee = isOwner ? 0 : 1;
+    const totalDeduction = transferAmt + fee;
+
+    if (client.balance < totalDeduction) {
+      alert(`ยอดเงินคงเหลือในบัญชีไม่เพียงพอสำหรับการโอน (ต้องการยอดครอบคลุมค่าธรรมเนียมระบบ ${fee} บาท)`);
       return;
     }
 
@@ -218,11 +250,19 @@ export default function ManageClientPage() {
 
     setActionLoading(true);
 
-    // Subtract from sender
-    storage.updateClient(clientId, { balance: client.balance - transferAmt });
+    // Subtract from sender (including fee)
+    storage.updateClient(clientId, { balance: client.balance - totalDeduction });
 
     // Add to receiver
     storage.updateClient(receiver.id, { balance: receiver.balance + transferAmt });
+
+    // Route fee to owner
+    if (fee > 0) {
+      const owner = storage.getOwnerAccount();
+      if (owner) {
+        storage.updateClient(owner.id, { balance: owner.balance + fee });
+      }
+    }
 
     // Add transaction log
     storage.addTransaction({
@@ -232,7 +272,7 @@ export default function ManageClientPage() {
       receiver_account: receiver.account_number,
       amount: transferAmt,
       type: "Transfer",
-      description: description || `โอนเงินจากบัญชี ${client.name} ไปยังบัญชี ${receiver.name}`
+      description: (description || `โอนเงินจากบัญชี ${client.name} ไปยังบัญชี ${receiver.name}`) + (fee > 0 ? " (หักค่าธรรมเนียมระบบ 1 บาท)" : "")
     });
 
     setTimeout(() => {

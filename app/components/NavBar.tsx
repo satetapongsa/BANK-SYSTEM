@@ -18,7 +18,7 @@ export default function NavBar() {
   if (pathname === "/") return null;
 
   return (
-    <nav className="fixed top-0 inset-x-0 z-40 bg-white/95 border-b border-slate-200/80 shadow-sm backdrop-blur-md">
+    <nav className="fixed top-0 inset-x-0 z-40 bg-slate-950/85 border-b border-slate-900 shadow-md backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Left: Brand Logo */}
@@ -27,11 +27,11 @@ export default function NavBar() {
               href="/overview"
               className="flex items-center gap-2 group transition-opacity hover:opacity-90"
             >
-              <div className="w-9 h-9 bg-[#0A2540] rounded-lg flex items-center justify-center shadow-sm">
+              <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm group-hover:bg-blue-500 transition-colors">
                 <Waves size={20} className="text-white font-black" />
               </div>
-              <span className="text-base font-bold text-slate-800 tracking-tight">
-                WAVY <span className="text-blue-600">BANK</span>
+              <span className="text-base font-bold text-slate-100 tracking-tight">
+                WAVY <span className="text-blue-500">BANK</span>
               </span>
             </Link>
 
@@ -45,8 +45,8 @@ export default function NavBar() {
                     href={href}
                     className={`inline-flex items-center gap-2 px-4 h-12 rounded-lg text-sm font-bold transition-all ${
                       isActive
-                        ? "text-blue-700 border-b-2 border-blue-600 rounded-b-none bg-blue-50/30"
-                        : "text-slate-500 hover:text-slate-950 hover:bg-slate-50"
+                        ? "text-blue-400 border-b-2 border-blue-500 rounded-b-none bg-blue-950/20"
+                        : "text-slate-400 hover:text-slate-100 hover:bg-slate-900/50"
                     }`}
                   >
                     <Icon size={16} />
@@ -59,11 +59,11 @@ export default function NavBar() {
 
           {/* Right: User Profile */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-900 rounded-xl border border-slate-800">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               <div className="text-left">
-                <p className="text-[10px] font-bold text-slate-555 leading-none">ผู้ดูแลระบบ (Admin)</p>
-                <span className="text-[9px] text-emerald-600 font-bold block mt-0.5">Console Online</span>
+                <p className="text-[10px] font-bold text-slate-300 leading-none">ผู้ดูแลระบบ (Admin)</p>
+                <span className="text-[9px] text-emerald-500 font-bold block mt-0.5">Console Online</span>
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function NavBar() {
       </div>
 
       {/* Mobile navigation bottom drawer for responsive ease */}
-      <div className="md:hidden fixed bottom-0 inset-x-0 bg-white/98 border-t border-slate-200 shadow-2xl px-2 py-1 flex justify-around z-40 backdrop-blur-md">
+      <div className="md:hidden fixed bottom-0 inset-x-0 bg-slate-950/98 border-t border-slate-900 shadow-2xl px-2 py-1 flex justify-around z-40 backdrop-blur-md">
         {links.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname?.startsWith(href + "/");
           return (
@@ -79,7 +79,7 @@ export default function NavBar() {
               key={href}
               href={href}
               className={`flex flex-col items-center gap-1 py-1.5 px-3 rounded-lg text-xs font-bold ${
-                isActive ? "text-blue-700 bg-blue-50" : "text-slate-500 hover:text-slate-900"
+                isActive ? "text-blue-400 bg-blue-950/40" : "text-slate-400 hover:text-slate-100"
               }`}
             >
               <Icon size={18} />

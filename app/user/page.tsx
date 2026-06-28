@@ -139,7 +139,10 @@ export default function UserDashboard() {
         const newAcc = {
           name: "ลูกค้า Google",
           email: email,
-          account_number: `00${Math.floor(Math.random() * 9)}-${Math.floor(10000 + Math.random() * 90000)}-${Math.floor(10 + Math.random() * 90)}`,
+          phone: "080-000-0000",
+          address: "ระบบธุรกรรมออนไลน์ WAVY BANK",
+          branch_code: "000",
+          account_number: storage.generateAccountNumber(),
           balance: 500.00,
           status: 'Active',
           region: 'Online'

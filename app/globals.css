@@ -4,23 +4,23 @@
 
 @layer base {
   body {
-    @apply bg-[#F8FAFC] text-slate-800 antialiased min-h-screen selection:bg-blue-100 selection:text-blue-900;
+    @apply bg-[#080D1A] text-slate-100 antialiased min-h-screen selection:bg-blue-900/60 selection:text-blue-100;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom Scrollbar for Premium Light Look */
+/* Custom Scrollbar for Premium Dark Look */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-[#F8FAFC];
+  @apply bg-[#080D1A];
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
 }
 
 /* Base Fade In and Slide Up Animations */
@@ -52,25 +52,107 @@
   animation: fadeIn 0.3s ease-out both;
 }
 
-/* Custom premium styling for data tables in light mode */
+/* Custom premium styling for data tables in dark theme */
 .bank-table-row {
-  @apply transition-colors hover:bg-slate-50/80;
+  @apply transition-colors hover:bg-slate-900/60;
 }
 
-/* Clean status indicators for light mode */
+/* Clean status indicators for dark theme */
 .status-pill-active {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-950/40 text-emerald-400 border border-emerald-800/40;
 }
 
 .status-pill-blocked {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/60;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-950/40 text-rose-400 border border-rose-800/40;
 }
 
-/* Input styles for light mode consistent look */
+/* Input styles for dark theme consistent look */
 .bank-input {
-  @apply w-full px-3.5 py-2 text-sm bg-white border border-slate-200 rounded-xl shadow-sm focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all placeholder:text-slate-400 text-slate-800 font-medium;
+  @apply w-full px-3.5 py-2 text-sm bg-slate-950 border border-slate-800 rounded-xl shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-500 text-slate-100 font-medium;
 }
 
 .bank-label {
-  @apply block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5;
+  @apply block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5;
 }
+
+.input-dark {
+  @apply w-full px-3.5 py-2.5 text-sm bg-slate-900 border border-slate-800 rounded-xl shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-500 text-slate-100 font-medium;
+}
+
+
+/* Modal and Toast styling variables */
+:root {
+  --color-success: #10b981;
+  --color-danger: #f43f5e;
+  --color-info: #3b82f6;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+}
+
+/* Modal specific styles */
+.modal-backdrop {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm;
+}
+
+.modal-content {
+  @apply bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-md shadow-2xl animate-fade-in-up;
+}
+
+/* Toast specific styles */
+.toast-container {
+  @apply fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full;
+}
+
+.toast {
+  @apply flex items-center gap-3 p-4 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl animate-fade-in;
+}
+
+.toast-success {
+  @apply border-emerald-800/40 bg-emerald-950/10;
+}
+
+.toast-danger {
+  @apply border-rose-800/40 bg-rose-950/10;
+}
+
+.toast-info {
+  @apply border-blue-800/40 bg-blue-950/10;
+}
+
+/* Premium glassmorphism and glow utilities */
+.glass {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.glass-blue {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.04) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 16px rgba(59, 130, 246, 0.55);
+}
+
+.text-glow-green {
+  text-shadow: 0 0 16px rgba(16, 185, 129, 0.55);
+}
+
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: center center;
+  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+  pointer-events: none;
+}
+

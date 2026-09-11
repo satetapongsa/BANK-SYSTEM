@@ -43,8 +43,8 @@ export default function ConfirmModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl p-6 overflow-hidden transition-colors">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
           <div className={`p-2.5 rounded-2xl border ${iconColors[type]}`}>
@@ -57,22 +57,22 @@ export default function ConfirmModal({
             )}
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900">{title}</h3>
-            {description && <p className="text-xs text-slate-500 mt-0.5">{description}</p>}
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">{title}</h3>
+            {description && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{description}</p>}
           </div>
         </div>
 
         {/* Details Table */}
         {details.length > 0 && (
-          <div className="my-5 p-4 rounded-2xl bg-slate-50 border border-slate-200 divide-y divide-slate-200/80 text-xs">
+          <div className="my-5 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 divide-y divide-slate-200/80 dark:divide-slate-700 text-xs">
             {details.map((item, idx) => (
               <div key={idx} className="flex justify-between items-center py-2.5 first:pt-0 last:pb-0">
-                <span className="text-slate-500 font-medium">{item.label}</span>
+                <span className="text-slate-500 dark:text-slate-400 font-medium">{item.label}</span>
                 <span
                   className={`font-mono ${
                     item.isHighlight
-                      ? "text-blue-600 font-black text-sm"
-                      : "text-slate-800 font-bold"
+                      ? "text-blue-600 dark:text-blue-400 font-black text-sm"
+                      : "text-slate-800 dark:text-slate-200 font-bold"
                   }`}
                 >
                   {item.value}
@@ -83,12 +83,12 @@ export default function ConfirmModal({
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 mt-6 pt-3 border-t border-slate-200">
+        <div className="flex items-center justify-end gap-3 mt-6 pt-3 border-t border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 rounded-xl transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 rounded-xl transition-colors disabled:opacity-50"
           >
             {cancelText}
           </button>

@@ -84,13 +84,13 @@ export default function AdminAccountsPage() {
   return (
     <div className="space-y-6 animate-fade-in py-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <CreditCard className="text-blue-600" size={24} />
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <CreditCard className="text-blue-600 dark:text-blue-400" size={24} />
             จัดการบัญชีธนาคาร (Bank Accounts Registry)
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             ตรวจสอบยอดเงินคงเหลือและสถานะการเปิดใช้งานบัญชีทั้งหมดในระบบ
           </p>
         </div>
@@ -99,29 +99,29 @@ export default function AdminAccountsPage() {
       {/* Search */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search size={15} className="absolute left-3.5 top-2.5 text-slate-400" />
+          <Search size={15} className="absolute left-3.5 top-2.5 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="ค้นหาตามเลขบัญชี หรืออีเมล..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && fetchAccounts()}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-500"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-blue-500"
           />
         </div>
         <button
           onClick={fetchAccounts}
-          className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200"
+          className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 transition-colors"
         >
           ค้นหา
         </button>
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm transition-colors">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px]">
+            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
               <tr>
                 <th className="py-3 px-5">เลขที่บัญชี / ประเภท</th>
                 <th className="py-3 px-4">เจ้าของบัญชี</th>
@@ -130,38 +130,38 @@ export default function AdminAccountsPage() {
                 <th className="py-3 px-5 text-right">การจัดการ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-slate-400">
+                  <td colSpan={5} className="py-12 text-center text-slate-400 dark:text-slate-500">
                     กำลังโหลดข้อมูลบัญชี...
                   </td>
                 </tr>
               ) : accounts.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-slate-400">
+                  <td colSpan={5} className="py-12 text-center text-slate-400 dark:text-slate-500">
                     ไม่พบบัญชีธนาคาร
                   </td>
                 </tr>
               ) : (
                 accounts.map((acc) => (
-                  <tr key={acc.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={acc.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="py-3.5 px-5">
-                      <p className="font-mono font-bold text-slate-900 text-sm">
+                      <p className="font-mono font-bold text-slate-900 dark:text-slate-100 text-sm">
                         {acc.account_number}
                       </p>
-                      <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">
                         {acc.account_type} • {acc.currency}
                       </p>
                     </td>
 
                     <td className="py-3.5 px-4">
-                      <p className="font-bold text-slate-900">{acc.owner_name}</p>
-                      <p className="text-[11px] font-mono text-slate-400">{acc.owner_email}</p>
+                      <p className="font-bold text-slate-900 dark:text-slate-200">{acc.owner_name}</p>
+                      <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500">{acc.owner_email}</p>
                     </td>
 
                     <td className="py-3.5 px-4 text-right">
-                      <span className="font-mono font-black text-sm text-blue-600">
+                      <span className="font-mono font-black text-sm text-blue-600 dark:text-blue-400">
                         ฿{Number(acc.balance).toLocaleString("th-TH", { minimumFractionDigits: 2 })}
                       </span>
                     </td>

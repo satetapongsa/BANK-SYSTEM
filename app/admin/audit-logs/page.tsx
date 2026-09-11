@@ -56,13 +56,13 @@ export default function AuditLogsPage() {
   return (
     <div className="space-y-6 animate-fade-in py-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <ShieldAlert className="text-purple-600" size={24} />
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <ShieldAlert className="text-purple-600 dark:text-purple-400" size={24} />
             ประวัติการตรวจสอบความปลอดภัย (Immutable Audit Trail)
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             บันทึกกิจกรรมที่มีผลต่อยอดเงิน สถานะบัญชี และการดำเนินการของผู้ดูแลระบบทั้งหมด
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function AuditLogsPage() {
       {/* Filter */}
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
-          <Search size={15} className="absolute left-3.5 top-2.5 text-slate-400" />
+          <Search size={15} className="absolute left-3.5 top-2.5 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="กรองตามกิจกรรม เช่น TRANSFER, LOGIN..."
@@ -80,16 +80,16 @@ export default function AuditLogsPage() {
               setActionFilter(e.target.value);
               setPage(1);
             }}
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-purple-500"
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-purple-500"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm transition-colors">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px]">
+            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">
               <tr>
                 <th className="py-3 px-5">เวลา / ผู้ดำเนินการ</th>
                 <th className="py-3 px-4">กิจกรรม (Action)</th>
@@ -99,45 +99,45 @@ export default function AuditLogsPage() {
                 <th className="py-3 px-5 text-right">รายละเอียด</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400">
+                  <td colSpan={6} className="py-12 text-center text-slate-400 dark:text-slate-500">
                     กำลังโหลดประวัติการตรวจสอบ...
                   </td>
                 </tr>
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400">
+                  <td colSpan={6} className="py-12 text-center text-slate-400 dark:text-slate-500">
                     ไม่พบบันทึก Audit Log
                   </td>
                 </tr>
               ) : (
                 logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="py-3.5 px-5">
-                      <p className="font-bold text-slate-900">{log.actor_email}</p>
-                      <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+                      <p className="font-bold text-slate-900 dark:text-slate-100">{log.actor_email}</p>
+                      <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">
                         {new Date(log.created_at).toLocaleString("th-TH")}
                       </p>
                     </td>
 
                     <td className="py-3.5 px-4">
-                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                      <span className="inline-flex px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
                         {log.action}
                       </span>
                     </td>
 
-                    <td className="py-3.5 px-4 font-mono text-slate-600">
-                      <span className="text-[10px] text-slate-400 uppercase">{log.entity_type}: </span>
+                    <td className="py-3.5 px-4 font-mono text-slate-600 dark:text-slate-400">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">{log.entity_type}: </span>
                       {log.entity_id || "-"}
                     </td>
 
-                    <td className="py-3.5 px-4 text-slate-500 max-w-[220px] truncate">
+                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 max-w-[220px] truncate">
                       {log.reason || "-"}
                     </td>
 
-                    <td className="py-3.5 px-4 font-mono text-[11px] text-slate-400">
+                    <td className="py-3.5 px-4 font-mono text-[11px] text-slate-400 dark:text-slate-500">
                       {log.ip_address || "127.0.0.1"}
                     </td>
 

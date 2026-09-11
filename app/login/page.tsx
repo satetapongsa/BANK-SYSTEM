@@ -50,32 +50,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-8 bg-slate-50">
+    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-8 bg-slate-50 dark:bg-slate-950 transition-colors">
       {/* Google-Style Container Card */}
-      <div className="w-full max-w-[440px] bg-white border border-slate-200/80 rounded-3xl p-8 sm:p-10 shadow-sm">
+      <div className="w-full max-w-[440px] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-8 sm:p-10 shadow-sm transition-colors">
         {/* Brand Logo & Title */}
         <div className="flex flex-col items-start mb-7">
           <div className="flex items-center gap-2 mb-5">
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
               <Shield size={22} className="stroke-[2.5]" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-800">
-              APEX <span className="text-blue-600">BANK</span>
+            <span className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">
+              APEX <span className="text-blue-600 dark:text-blue-400">BANK</span>
             </span>
           </div>
 
-          <h1 className="text-2xl font-normal text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-normal text-slate-900 dark:text-white tracking-tight">
             ลงชื่อเข้าใช้
           </h1>
-          <p className="text-sm text-slate-600 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             ใช้บัญชี APEX Bank ของคุณ
           </p>
         </div>
 
         {/* Error Notification */}
         {error && (
-          <div className="mb-6 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2.5">
-            <AlertCircle size={16} className="shrink-0 text-red-600 mt-0.5" />
+          <div className="mb-6 p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-xs flex items-start gap-2.5">
+            <AlertCircle size={16} className="shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
             <span className="leading-relaxed">{error}</span>
           </div>
         )}
@@ -90,7 +90,7 @@ export default function LoginPage() {
         >
           {/* Identifier Input */}
           <div className="relative">
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               อีเมล เบอร์โทรศัพท์ หรือ ชื่อผู้ใช้
             </label>
             <input
@@ -100,21 +100,21 @@ export default function LoginPage() {
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               placeholder="เช่น 089-123-4567 หรือ admin"
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors bg-white"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors bg-white dark:bg-slate-800/80"
             />
           </div>
 
           {/* Password Input */}
           <div className="relative">
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-slate-700">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
                 รหัสผ่าน
               </label>
               <button
                 type="button"
                 tabIndex={-1}
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-xs text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline flex items-center gap-1"
               >
                 {showPassword ? (
                   <>
@@ -135,7 +135,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="ป้อนรหัสผ่านของคุณ"
-              className="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors bg-white"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors bg-white dark:bg-slate-800/80"
             />
           </div>
 
@@ -146,7 +146,7 @@ export default function LoginPage() {
               onClick={() => {
                 alert("สำหรับบัญชีตัวอย่าง:\n- แอดมิน: admin / admin\n- สมาชิก: 089-123-4567 / 123456");
               }}
-              className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline py-1.5"
+              className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline py-1.5"
             >
               ต้องการความช่วยเหลือ?
             </button>
@@ -169,8 +169,8 @@ export default function LoginPage() {
         </form>
 
         {/* Quick Test Shortcuts (Clean Google-Style Footnote) */}
-        <div className="mt-8 pt-6 border-t border-slate-100">
-          <p className="text-xs text-slate-500 mb-2.5 font-medium">
+        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-2.5 font-medium">
             ทางลัดทดสอบระบบ (คลิกเพื่อเข้าสู่ระบบทันที):
           </p>
           <div className="flex flex-wrap gap-2">
@@ -178,26 +178,26 @@ export default function LoginPage() {
               type="button"
               disabled={isLoading}
               onClick={() => quickLogin("admin", "admin")}
-              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200/60 flex items-center gap-1.5"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors border border-slate-200/60 dark:border-slate-700 flex items-center gap-1.5"
             >
               <span>👑 เข้าเป็น Admin</span>
-              <span className="text-[11px] text-slate-400 font-mono">(admin)</span>
+              <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">(admin)</span>
             </button>
             <button
               type="button"
               disabled={isLoading}
               onClick={() => quickLogin("089-123-4567", "123456")}
-              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors border border-blue-100 flex items-center gap-1.5"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 transition-colors border border-blue-100 dark:border-blue-900 flex items-center gap-1.5"
             >
               <span>👤 เข้าเป็นผู้ใช้ (Somchai)</span>
-              <span className="text-[11px] text-blue-400 font-mono">(089...)</span>
+              <span className="text-[11px] text-blue-400 dark:text-blue-500 font-mono">(089...)</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Footer Info */}
-      <div className="mt-6 text-center text-xs text-slate-400">
+      <div className="mt-6 text-center text-xs text-slate-400 dark:text-slate-500">
         APEX Digital Banking Platform • มาตรฐานความปลอดภัยระดับองค์กร
       </div>
     </div>

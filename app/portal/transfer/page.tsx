@@ -137,46 +137,46 @@ export default function TransferPage() {
     <div className="max-w-xl mx-auto py-4 space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <ArrowLeftRight className="text-blue-600" size={24} />
+        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+          <ArrowLeftRight className="text-blue-600 dark:text-blue-400" size={24} />
           โอนเงินออนไลน์ (Instant Transfer)
         </h1>
-        <p className="text-xs text-slate-500 mt-1">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
           โอนเงินไปยังบัญชีอื่นในระบบได้อย่างรวดเร็ว แม่นยำ และไม่มีค่าธรรมเนียม
         </p>
       </div>
 
       {/* Main Transfer Form Box */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm transition-colors">
         {/* Quick Sample Recipients Bar */}
-        <div className="mb-6 p-3 rounded-2xl bg-slate-50 border border-slate-200">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
-            <Sparkles size={13} className="text-blue-600" />
+        <div className="mb-6 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+            <Sparkles size={13} className="text-blue-600 dark:text-blue-400" />
             <span>คลิกใส่เลขบัญชีปลายทางตัวอย่างทันที:</span>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setToAccountNumber("1008765432")}
-              className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-mono text-xs transition-colors flex items-center gap-1.5"
             >
               <span>1008765432</span>
-              <span className="text-[10px] text-slate-400">(คุณมณี)</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">(คุณมณี)</span>
             </button>
             <button
               type="button"
               onClick={() => setToAccountNumber("1009998877")}
-              className="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-mono text-xs transition-colors flex items-center gap-1.5"
             >
               <span>1009998877</span>
-              <span className="text-[10px] text-slate-400">(คุณอนันดา)</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500">(คุณอนันดา)</span>
             </button>
           </div>
         </div>
 
         {error && (
-          <div className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-            <AlertCircle size={16} className="shrink-0 text-rose-600" />
+          <div className="mb-5 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0 text-rose-600 dark:text-rose-400" />
             <span>{error}</span>
           </div>
         )}
@@ -184,26 +184,26 @@ export default function TransferPage() {
         <form onSubmit={handleReviewTransfer} className="space-y-4">
           {/* Source Account */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
               จากบัญชีต้นทาง
             </label>
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold">
                   <Building2 size={18} />
                 </div>
                 <div>
-                  <p className="font-mono text-xs font-bold text-slate-800">
+                  <p className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
                     {selectedAccount?.account_number}
                   </p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     {selectedAccount?.account_type} Account
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[11px] text-slate-500">ยอดคงเหลือ</p>
-                <p className="font-mono text-sm font-black text-blue-600">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">ยอดคงเหลือ</p>
+                <p className="font-mono text-sm font-black text-blue-600 dark:text-blue-400">
                   ฿
                   {Number(selectedAccount?.balance || 0).toLocaleString("th-TH", {
                     minimumFractionDigits: 2,
@@ -215,7 +215,7 @@ export default function TransferPage() {
 
           {/* Destination */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
               เลขที่บัญชีปลายทาง (10 หลัก)
             </label>
             <input
@@ -225,7 +225,7 @@ export default function TransferPage() {
               placeholder="เช่น 1008765432"
               value={toAccountNumber}
               onChange={(e) => setToAccountNumber(e.target.value.replace(/\D/g, ""))}
-              className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-base font-bold tracking-wider focus:outline-none focus:border-blue-500 focus:bg-white transition-colors"
+              className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-mono text-base font-bold tracking-wider focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-800 transition-colors"
             />
           </div>
 

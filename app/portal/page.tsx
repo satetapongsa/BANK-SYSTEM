@@ -277,31 +277,31 @@ export default function MemberPortalPage() {
       )}
 
       {/* Recent Transactions */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm transition-colors">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
-              <Clock size={18} className="text-blue-600" />
+            <h2 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <Clock size={18} className="text-blue-600 dark:text-blue-400" />
               <span>รายการธุรกรรมล่าสุด</span>
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               10 รายการล่าสุดในบัญชีของคุณ
             </p>
           </div>
           <Link
             href="/portal/transactions"
-            className="text-xs font-bold text-blue-600 hover:text-blue-700"
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
           >
             ดูทั้งหมด &rarr;
           </Link>
         </div>
 
         {transactions.length === 0 ? (
-          <div className="py-12 text-center text-xs text-slate-400">
+          <div className="py-12 text-center text-xs text-slate-400 dark:text-slate-500">
             ยังไม่มีประวัติธุรกรรมในบัญชีนี้
           </div>
         ) : (
-          <div className="divide-y divide-slate-100 overflow-x-auto">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800 overflow-x-auto">
             {transactions.map((tx) => {
               const isPositive =
                 tx.type === "DEPOSIT" ||
@@ -314,14 +314,14 @@ export default function MemberPortalPage() {
                     setLatestTx(tx);
                     setReceiptOpen(true);
                   }}
-                  className="py-3.5 flex items-center justify-between hover:bg-slate-50 px-2 rounded-xl cursor-pointer transition-colors"
+                  className="py-3.5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/60 px-2 rounded-xl cursor-pointer transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-9 h-9 rounded-xl flex items-center justify-center ${
                         isPositive
-                          ? "bg-emerald-50 text-emerald-600"
-                          : "bg-slate-100 text-slate-600"
+                          ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                       }`}
                     >
                       {tx.type === "DEPOSIT" ? (
@@ -333,10 +333,10 @@ export default function MemberPortalPage() {
                       )}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-800">
+                      <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
                         {tx.description || tx.type}
                       </p>
-                      <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+                      <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">
                         {tx.transaction_reference} •{" "}
                         {new Date(tx.created_at).toLocaleDateString("th-TH")}
                       </p>
@@ -346,7 +346,7 @@ export default function MemberPortalPage() {
                   <div className="text-right">
                     <p
                       className={`font-mono text-sm font-black ${
-                        isPositive ? "text-emerald-600" : "text-slate-900"
+                        isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-slate-900 dark:text-slate-100"
                       }`}
                     >
                       {isPositive ? "+" : "-"}฿
@@ -354,7 +354,7 @@ export default function MemberPortalPage() {
                         minimumFractionDigits: 2,
                       })}
                     </p>
-                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">
+                    <span className="text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase">
                       {tx.status}
                     </span>
                   </div>

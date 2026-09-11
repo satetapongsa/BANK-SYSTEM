@@ -31,23 +31,23 @@ export default function ConfirmModal({
   if (!isOpen) return null;
 
   const iconColors = {
-    info: "text-cyan-400 bg-cyan-950/50 border-cyan-800/60",
-    warning: "text-amber-400 bg-amber-950/50 border-amber-800/60",
-    danger: "text-rose-400 bg-rose-950/50 border-rose-800/60",
+    info: "text-blue-600 bg-blue-50 border-blue-200",
+    warning: "text-amber-600 bg-amber-50 border-amber-200",
+    danger: "text-rose-600 bg-rose-50 border-rose-200",
   };
 
   const btnColors = {
-    info: "bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold shadow-cyan-500/20 shadow-lg",
-    warning: "bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold shadow-amber-500/20 shadow-lg",
-    danger: "bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-rose-600/20 shadow-lg",
+    info: "bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-sm",
+    warning: "bg-amber-600 hover:bg-amber-700 text-white font-bold shadow-sm",
+    danger: "bg-rose-600 hover:bg-rose-700 text-white font-bold shadow-sm",
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 overflow-hidden">
-        {/* Glow Header */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-fade-in">
+      <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 overflow-hidden">
+        {/* Header */}
         <div className="flex items-center gap-3 mb-4">
-          <div className={`p-2.5 rounded-xl border ${iconColors[type]}`}>
+          <div className={`p-2.5 rounded-2xl border ${iconColors[type]}`}>
             {type === "danger" ? (
               <ShieldAlert size={24} />
             ) : type === "warning" ? (
@@ -57,22 +57,22 @@ export default function ConfirmModal({
             )}
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-100">{title}</h3>
-            {description && <p className="text-xs text-slate-400 mt-0.5">{description}</p>}
+            <h3 className="text-base font-bold text-slate-900">{title}</h3>
+            {description && <p className="text-xs text-slate-500 mt-0.5">{description}</p>}
           </div>
         </div>
 
         {/* Details Table */}
         {details.length > 0 && (
-          <div className="my-5 p-4 rounded-xl bg-slate-950/70 border border-slate-800/80 divide-y divide-slate-800/60 text-sm">
+          <div className="my-5 p-4 rounded-2xl bg-slate-50 border border-slate-200 divide-y divide-slate-200/80 text-xs">
             {details.map((item, idx) => (
               <div key={idx} className="flex justify-between items-center py-2.5 first:pt-0 last:pb-0">
-                <span className="text-slate-400 text-xs font-medium">{item.label}</span>
+                <span className="text-slate-500 font-medium">{item.label}</span>
                 <span
-                  className={`font-mono text-sm ${
+                  className={`font-mono ${
                     item.isHighlight
-                      ? "text-cyan-400 font-bold text-base"
-                      : "text-slate-200 font-semibold"
+                      ? "text-blue-600 font-black text-sm"
+                      : "text-slate-800 font-bold"
                   }`}
                 >
                   {item.value}
@@ -83,12 +83,12 @@ export default function ConfirmModal({
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 mt-6 pt-3 border-t border-slate-800/80">
+        <div className="flex items-center justify-end gap-3 mt-6 pt-3 border-t border-slate-200">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 text-sm font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 rounded-xl transition-colors disabled:opacity-50"
+            className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 rounded-xl transition-colors disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -96,10 +96,10 @@ export default function ConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className={`px-5 py-2.5 text-sm rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 ${btnColors[type]}`}
+            className={`px-5 py-2.5 text-xs rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 ${btnColors[type]}`}
           >
             {isLoading && (
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             )}
             <span>{isLoading ? "กำลังดำเนินการ..." : confirmText}</span>
           </button>

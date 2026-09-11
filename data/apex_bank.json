@@ -11,7 +11,7 @@
       "status": "ACTIVE",
       "created_at": "2026-09-11T12:28:22.315Z",
       "updated_at": "2026-09-11T12:28:22.315Z",
-      "last_login_at": "2026-09-11T12:28:22.315Z"
+      "last_login_at": "2026-09-11T12:58:31.919Z"
     },
     {
       "id": 2,
@@ -24,7 +24,7 @@
       "status": "ACTIVE",
       "created_at": "2026-09-11T12:28:22.315Z",
       "updated_at": "2026-09-11T12:28:22.315Z",
-      "last_login_at": "2026-09-11T12:28:22.315Z"
+      "last_login_at": "2026-09-11T12:58:26.326Z"
     },
     {
       "id": 3,
@@ -60,10 +60,10 @@
       "account_number": "1002345678",
       "account_type": "SAVINGS",
       "currency": "THB",
-      "balance": "128000.00",
+      "balance": "129250.00",
       "status": "ACTIVE",
       "created_at": "2026-09-11T12:28:22.315Z",
-      "updated_at": "2026-09-11T12:32:00.674Z"
+      "updated_at": "2026-09-11T13:02:53.074Z"
     },
     {
       "id": 2,
@@ -71,10 +71,10 @@
       "account_number": "1008765432",
       "account_type": "SAVINGS",
       "currency": "THB",
-      "balance": "52200.50",
+      "balance": "54200.50",
       "status": "ACTIVE",
       "created_at": "2026-09-11T12:28:22.315Z",
-      "updated_at": "2026-09-11T12:32:00.673Z"
+      "updated_at": "2026-09-11T13:02:53.071Z"
     },
     {
       "id": 3,
@@ -89,6 +89,111 @@
     }
   ],
   "transactions": [
+    {
+      "id": 1789131773563,
+      "transaction_reference": "TXN-20260911-VGCW88",
+      "idempotency_key": null,
+      "type": "ADJUSTMENT",
+      "status": "COMPLETED",
+      "from_account_id": null,
+      "to_account_id": 1,
+      "amount": "250.00",
+      "currency": "THB",
+      "description": "[ADMIN ADJUSTMENT CREDIT] Compensation for maintenance disruption",
+      "metadata": {
+        "adjustment_type": "CREDIT",
+        "before_balance": "129000.00",
+        "after_balance": "129250.00",
+        "reason": "Compensation for maintenance disruption"
+      },
+      "created_by": 1,
+      "created_at": "2026-09-11T13:02:53.074Z",
+      "completed_at": "2026-09-11T13:02:53.074Z"
+    },
+    {
+      "id": 1789131773879,
+      "transaction_reference": "TXN-20260911-V7E91D",
+      "idempotency_key": "idempo-test-1789131773065",
+      "type": "TRANSFER",
+      "status": "COMPLETED",
+      "from_account_id": 1,
+      "to_account_id": 2,
+      "amount": "500.00",
+      "currency": "THB",
+      "description": "Idempotent payment",
+      "metadata": {
+        "sender_account": "1002345678",
+        "recipient_account": "1008765432",
+        "sender_before": "129500.00",
+        "sender_after": "129000.00",
+        "recipient_before": "53700.50",
+        "recipient_after": "54200.50"
+      },
+      "created_by": 2,
+      "created_at": "2026-09-11T13:02:53.067Z",
+      "completed_at": "2026-09-11T13:02:53.067Z"
+    },
+    {
+      "id": 1789131773520,
+      "transaction_reference": "TXN-20260911-868UFW",
+      "idempotency_key": null,
+      "type": "TRANSFER",
+      "status": "COMPLETED",
+      "from_account_id": 1,
+      "to_account_id": 2,
+      "amount": "1500.00",
+      "currency": "THB",
+      "description": "Rent share",
+      "metadata": {
+        "sender_account": "1002345678",
+        "recipient_account": "1008765432",
+        "sender_before": "131000.00",
+        "sender_after": "129500.00",
+        "recipient_before": "52200.50",
+        "recipient_after": "53700.50"
+      },
+      "created_by": 2,
+      "created_at": "2026-09-11T13:02:53.064Z",
+      "completed_at": "2026-09-11T13:02:53.064Z"
+    },
+    {
+      "id": 1789131773067,
+      "transaction_reference": "TXN-20260911-ZIEZBQ",
+      "idempotency_key": null,
+      "type": "WITHDRAW",
+      "status": "COMPLETED",
+      "from_account_id": 1,
+      "to_account_id": null,
+      "amount": "2000.00",
+      "currency": "THB",
+      "description": "Test withdrawal",
+      "metadata": {
+        "before_balance": "133000.00",
+        "after_balance": "131000.00"
+      },
+      "created_by": 2,
+      "created_at": "2026-09-11T13:02:53.061Z",
+      "completed_at": "2026-09-11T13:02:53.061Z"
+    },
+    {
+      "id": 1789131773932,
+      "transaction_reference": "TXN-20260911-ORPOBM",
+      "idempotency_key": null,
+      "type": "DEPOSIT",
+      "status": "COMPLETED",
+      "from_account_id": null,
+      "to_account_id": 1,
+      "amount": "5000.00",
+      "currency": "THB",
+      "description": "Test deposit",
+      "metadata": {
+        "before_balance": "128000.00",
+        "after_balance": "133000.00"
+      },
+      "created_by": 1,
+      "created_at": "2026-09-11T13:02:53.057Z",
+      "completed_at": "2026-09-11T13:02:53.057Z"
+    },
     {
       "id": 1789129920679,
       "transaction_reference": "TXN-20260911-QJ23FV",
@@ -337,6 +442,173 @@
     }
   ],
   "audit_logs": [
+    {
+      "id": 1789131773772,
+      "actor_user_id": 1,
+      "action": "ADMIN_ADJUSTMENT_CREDIT",
+      "entity_type": "BANK_ACCOUNT",
+      "entity_id": "1002345678",
+      "before_data": {
+        "balance": "129000.00"
+      },
+      "after_data": {
+        "balance": "129250.00",
+        "adjustment": "250.00"
+      },
+      "reason": "Compensation for maintenance disruption",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Web/Client",
+      "created_at": "2026-09-11T13:02:53.074Z"
+    },
+    {
+      "id": 1789131773687,
+      "actor_user_id": 1,
+      "action": "ACCOUNT_STATUS_ACTIVE",
+      "entity_type": "BANK_ACCOUNT",
+      "entity_id": "1008765432",
+      "before_data": {
+        "status": "SUSPENDED"
+      },
+      "after_data": {
+        "status": "ACTIVE"
+      },
+      "reason": "Restored active status",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Web/Client",
+      "created_at": "2026-09-11T13:02:53.071Z"
+    },
+    {
+      "id": 1789131773673,
+      "actor_user_id": 1,
+      "action": "ACCOUNT_STATUS_SUSPENDED",
+      "entity_type": "BANK_ACCOUNT",
+      "entity_id": "1008765432",
+      "before_data": {
+        "status": "ACTIVE"
+      },
+      "after_data": {
+        "status": "SUSPENDED"
+      },
+      "reason": "Security review test",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Web/Client",
+      "created_at": "2026-09-11T13:02:53.070Z"
+    },
+    {
+      "id": 1789131774036,
+      "actor_user_id": 2,
+      "action": "TRANSFER_COMPLETED",
+      "entity_type": "TRANSACTION",
+      "entity_id": "TXN-20260911-V7E91D",
+      "before_data": {
+        "sender_balance": "129500.00",
+        "recipient_balance": "53700.50"
+      },
+      "after_data": {
+        "sender_balance": "129000.00",
+        "recipient_balance": "54200.50",
+        "amount": "500.00"
+      },
+      "reason": "Idempotent payment",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Web/Client",
+      "created_at": "2026-09-11T13:02:53.067Z"
+    },
+    {
+      "id": 1789131773682,
+      "actor_user_id": 2,
+      "action": "TRANSFER_COMPLETED",
+      "entity_type": "TRANSACTION",
+      "entity_id": "TXN-20260911-868UFW",
+      "before_data": {
+        "sender_balance": "131000.00",
+        "recipient_balance": "52200.50"
+      },
+      "after_data": {
+        "sender_balance": "129500.00",
+        "recipient_balance": "53700.50",
+        "amount": "1500.00"
+      },
+      "reason": "Rent share",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Web/Client",
+      "created_at": "2026-09-11T13:02:53.064Z"
+    },
+    {
+      "id": 1789131773933,
+      "actor_user_id": 2,
+      "action": "WITHDRAW_COMPLETED",
+      "entity_type": "TRANSACTION",
+      "entity_id": "TXN-20260911-ZIEZBQ",
+      "before_data": {
+        "balance": "133000.00"
+      },
+      "after_data": {
+        "balance": "131000.00",
+        "amount": "2000.00"
+      },
+      "reason": "Test withdrawal",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Web/Client",
+      "created_at": "2026-09-11T13:02:53.061Z"
+    },
+    {
+      "id": 1789131773712,
+      "actor_user_id": 1,
+      "action": "DEPOSIT_COMPLETED",
+      "entity_type": "TRANSACTION",
+      "entity_id": "TXN-20260911-ORPOBM",
+      "before_data": {
+        "balance": "128000.00"
+      },
+      "after_data": {
+        "balance": "133000.00",
+        "amount": "5000.00"
+      },
+      "reason": "Test deposit",
+      "ip_address": "127.0.0.1",
+      "user_agent": "Web/Client",
+      "created_at": "2026-09-11T13:02:53.057Z"
+    },
+    {
+      "id": 1789131512423,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+      "created_at": "2026-09-11T12:58:31.927Z"
+    },
+    {
+      "id": 1789131507293,
+      "actor_user_id": 2,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "somchai@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+      "created_at": "2026-09-11T12:58:26.330Z"
+    },
+    {
+      "id": 1789131476760,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+      "created_at": "2026-09-11T12:57:56.319Z"
+    },
     {
       "id": 1789129921423,
       "actor_user_id": 1,
@@ -611,6 +883,96 @@
   ],
   "sessions": [],
   "notifications": [
+    {
+      "id": 1789131774036,
+      "user_id": 2,
+      "title": "แจ้งเตือนการปรับปรุงยอดเงิน (CREDIT)",
+      "message": "เจ้าหน้าที่ได้ปรับปรุงยอดเงินในบัญชี 1002345678 จำนวน ฿250.00 บาท เนื่องจาก: Compensation for maintenance disruption",
+      "type": "WARNING",
+      "is_read": false,
+      "link": "/portal",
+      "created_at": "2026-09-11T13:02:53.074Z"
+    },
+    {
+      "id": 1789131773449,
+      "user_id": 3,
+      "title": "สถานะบัญชีธนาคารเปลี่ยนแปลง",
+      "message": "บัญชี 1008765432 เปลี่ยนเป็น ACTIVE เนื่องจาก: Restored active status",
+      "type": "SUCCESS",
+      "is_read": false,
+      "link": null,
+      "created_at": "2026-09-11T13:02:53.071Z"
+    },
+    {
+      "id": 1789131773390,
+      "user_id": 3,
+      "title": "สถานะบัญชีธนาคารเปลี่ยนแปลง",
+      "message": "บัญชี 1008765432 เปลี่ยนเป็น SUSPENDED เนื่องจาก: Security review test",
+      "type": "WARNING",
+      "is_read": false,
+      "link": null,
+      "created_at": "2026-09-11T13:02:53.070Z"
+    },
+    {
+      "id": 1789131773279,
+      "user_id": 3,
+      "title": "ได้รับเงินโอนเข้าบัญชี",
+      "message": "ได้รับเงินโอน ฿500.00 บาท จากบัญชี 1002345678",
+      "type": "SUCCESS",
+      "is_read": false,
+      "link": "/portal/transactions",
+      "created_at": "2026-09-11T13:02:53.067Z"
+    },
+    {
+      "id": 1789131773595,
+      "user_id": 2,
+      "title": "โอนเงินสำเร็จ",
+      "message": "โอนเงิน ฿500.00 บาท ไปยังบัญชี 1008765432 เรียบร้อยแล้ว",
+      "type": "SUCCESS",
+      "is_read": false,
+      "link": "/portal/transactions",
+      "created_at": "2026-09-11T13:02:53.067Z"
+    },
+    {
+      "id": 1789131773654,
+      "user_id": 3,
+      "title": "ได้รับเงินโอนเข้าบัญชี",
+      "message": "ได้รับเงินโอน ฿1500.00 บาท จากบัญชี 1002345678",
+      "type": "SUCCESS",
+      "is_read": false,
+      "link": "/portal/transactions",
+      "created_at": "2026-09-11T13:02:53.064Z"
+    },
+    {
+      "id": 1789131773611,
+      "user_id": 2,
+      "title": "โอนเงินสำเร็จ",
+      "message": "โอนเงิน ฿1500.00 บาท ไปยังบัญชี 1008765432 เรียบร้อยแล้ว",
+      "type": "SUCCESS",
+      "is_read": false,
+      "link": "/portal/transactions",
+      "created_at": "2026-09-11T13:02:53.064Z"
+    },
+    {
+      "id": 1789131773769,
+      "user_id": 2,
+      "title": "ถอนเงินสำเร็จ",
+      "message": "ถอนเงินจากบัญชี 1002345678 จำนวน ฿2000.00 บาท ยอดคงเหลือ ฿131000.00 บาท",
+      "type": "WARNING",
+      "is_read": false,
+      "link": "/portal",
+      "created_at": "2026-09-11T13:02:53.061Z"
+    },
+    {
+      "id": 1789131773276,
+      "user_id": 2,
+      "title": "เงินเข้าบัญชีสำเร็จ",
+      "message": "มีเงินฝากเข้าบัญชี 1002345678 จำนวน ฿5000.00 บาท",
+      "type": "SUCCESS",
+      "is_read": false,
+      "link": "/portal",
+      "created_at": "2026-09-11T13:02:53.057Z"
+    },
     {
       "id": 1789129920789,
       "user_id": 2,

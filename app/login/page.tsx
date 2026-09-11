@@ -2,37 +2,32 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Lock, Mail, User, Phone, ArrowRight, AlertCircle, Sparkles } from "lucide-react";
+import { ShieldCheck, Lock, Phone, User, ArrowRight, AlertCircle, Sparkles, KeyRound } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [tab, setTab] = useState<"login" | "register">("login");
+  const [roleMode, setRoleMode] = useState<"MEMBER" | "ADMIN">("MEMBER");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Form states
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-
-  const handleLogin = async (loginEmail?: string, loginPassword?: string) => {
+  const handleLogin = async (customId?: string, customPass?: string) => {
     setError(null);
     setIsLoading(true);
-    const targetEmail = loginEmail || email;
-    const targetPassword = loginPassword || password;
+    const finalId = customId !== undefined ? customId : identifier;
+    const finalPass = customPass !== undefined ? customPass : password;
 
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: targetEmail, password: targetPassword }),
+        body: JSON.stringify({ identifier: finalId, password: finalPass }),
       });
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        throw new Error(json.error?.message || "ไม่สามารถเข้าสู่ระบบได้");
+        throw new Error(json.error?.message || "เข้าสู่ระบบไม่สำเร็จ");
       }
 
       const role = json.data?.user?.role;
@@ -48,279 +43,187 @@ export default function LoginPage() {
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
+  const fillAdmin = () => {
+    setRoleMode("ADMIN");
+    setIdentifier("admin");
+    setPassword("admin");
+    handleLogin("admin", "admin");
+  };
 
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          first_name: firstName,
-          last_name: lastName,
-          phone,
-        }),
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.error?.message || "ไม่สามารถลงทะเบียนได้");
-      }
-
-      router.push("/portal");
-    } catch (err: any) {
-      setError(err.message || "เกิดข้อผิดพลาดในการลงทะเบียน");
-    } finally {
-      setIsLoading(false);
-    }
+  const fillMember = () => {
+    setRoleMode("MEMBER");
+    setIdentifier("089-123-4567");
+    setPassword("123456");
+    handleLogin("089-123-4567", "123456");
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center py-10 px-4">
+    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
       <div className="w-full max-w-md">
         {/* Brand Banner */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 flex items-center justify-center shadow-xl shadow-cyan-500/20 mb-4 ring-4 ring-cyan-500/10">
-            <ShieldCheck size={36} className="text-slate-950 stroke-[2.5]" />
+          <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 mb-3">
+            <ShieldCheck size={32} className="text-white stroke-[2.5]" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-100">
-            APEX <span className="text-cyan-400">BANK</span>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            APEX <span className="text-blue-600">BANK</span>
           </h1>
-          <p className="text-xs font-medium text-slate-400 mt-1 max-w-xs">
-            แพลตฟอร์มบริหารการเงินและธนาคารดิจิทัลระดับองค์กรที่ปลอดภัย
+          <p className="text-xs font-medium text-slate-500 mt-1">
+            ระบบธนาคารดิจิทัลที่ปลอดภัย ใช้งานง่าย สะอาด เป็นระเบียบ
           </p>
         </div>
 
         {/* Card Box */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
-          {/* Quick Demo Credentials Bar */}
-          <div className="mb-6 p-3.5 rounded-2xl bg-slate-950/70 border border-cyan-800/40">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 mb-2">
-              <Sparkles size={14} />
-              <span>เข้าสู่ระบบด่วนสำหรับการทดสอบ (Demo Accounts)</span>
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl">
+          {/* Quick 1-Click Login Bar */}
+          <div className="mb-6 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+              <Sparkles size={14} className="text-blue-600" />
+              <span>คลิกเดียวเข้าสู่ระบบด่วน (Demo Accounts):</span>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={() => handleLogin("admin@apexbank.com", "Password123!")}
+                onClick={fillAdmin}
                 disabled={isLoading}
-                className="px-3 py-2 text-[11px] font-bold rounded-xl bg-cyan-950/80 border border-cyan-700/60 text-cyan-300 hover:bg-cyan-900/80 transition-all text-left truncate"
+                className="px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-bold transition-all text-center"
               >
-                👑 Admin เข้าสู่ระบบ
+                👑 แอดมิน (admin / admin)
               </button>
               <button
                 type="button"
-                onClick={() => handleLogin("somchai@apexbank.com", "Password123!")}
+                onClick={fillMember}
                 disabled={isLoading}
-                className="px-3 py-2 text-[11px] font-bold rounded-xl bg-blue-950/80 border border-blue-700/60 text-blue-300 hover:bg-blue-900/80 transition-all text-left truncate"
+                className="px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold transition-all text-center"
               >
-                👤 Member (Somchai)
+                👤 ผู้ใช้ทั่วไป (Somchai)
               </button>
             </div>
           </div>
 
-          {/* Tab Switcher */}
-          <div className="flex rounded-xl bg-slate-950 p-1 border border-slate-800 mb-6">
+          {/* Mode Switcher */}
+          <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200 mb-6">
             <button
+              type="button"
               onClick={() => {
-                setTab("login");
+                setRoleMode("MEMBER");
+                setIdentifier("");
+                setPassword("");
                 setError(null);
               }}
               className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                tab === "login"
-                  ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20"
-                  : "text-slate-400 hover:text-slate-200"
+                roleMode === "MEMBER"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              เข้าสู่ระบบ (Sign In)
+              ลูกค้าบุคคล (Member)
             </button>
             <button
+              type="button"
               onClick={() => {
-                setTab("register");
+                setRoleMode("ADMIN");
+                setIdentifier("admin");
+                setPassword("admin");
                 setError(null);
               }}
               className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                tab === "register"
-                  ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20"
-                  : "text-slate-400 hover:text-slate-200"
+                roleMode === "ADMIN"
+                  ? "bg-white text-purple-600 shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              เปิดบัญชีใหม่ (Sign Up)
+              ผู้ดูแลระบบ (Admin)
             </button>
           </div>
 
           {/* Error Alert */}
           {error && (
-            <div className="mb-5 p-3 rounded-xl bg-rose-950/50 border border-rose-800/80 text-rose-300 text-xs flex items-center gap-2 animate-fade-in">
-              <AlertCircle size={16} className="shrink-0" />
+            <div className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+              <AlertCircle size={16} className="shrink-0 text-rose-600" />
               <span>{error}</span>
             </div>
           )}
 
-          {tab === "login" ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleLogin();
-              }}
-              className="space-y-4"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+            className="space-y-4"
+          >
+            {roleMode === "MEMBER" ? (
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  เบอร์โทรศัพท์ (Phone Number) หรือ อีเมล
+                </label>
+                <div className="relative">
+                  <Phone size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
+                  <input
+                    type="text"
+                    required
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder="เช่น 089-123-4567 หรืออีเมล"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition-colors"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  ชื่อผู้ใช้แอดมิน (Username)
+                </label>
+                <div className="relative">
+                  <User size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
+                  <input
+                    type="text"
+                    required
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
+                    placeholder="admin"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-purple-500 focus:bg-white transition-colors"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                รหัสผ่าน (Password)
+              </label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition-colors"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full py-3 rounded-xl text-white font-bold text-xs shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2 mt-2 disabled:opacity-50 ${
+                roleMode === "ADMIN"
+                  ? "bg-purple-600 hover:bg-purple-700 shadow-purple-500/20"
+                  : "bg-blue-600 hover:bg-blue-700 shadow-blue-500/20"
+              }`}
             >
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  อีเมล (Email)
-                </label>
-                <div className="relative">
-                  <Mail size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="user@apexbank.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  รหัสผ่าน (Password)
-                </label>
-                <div className="relative">
-                  <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-500" />
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500 transition-colors"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all active:scale-[0.99] flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
-              >
-                {isLoading ? (
-                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <span>เข้าสู่ระบบ</span>
-                    <ArrowRight size={14} />
-                  </>
-                )}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleRegister} className="space-y-3.5">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    ชื่อจริง
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="สมชาย"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    นามสกุล
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="ใจดี"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  เบอร์โทรศัพท์
-                </label>
-                <div className="relative">
-                  <Phone size={14} className="absolute left-3.5 top-3 text-slate-500" />
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="089-123-4567"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  อีเมล
-                </label>
-                <div className="relative">
-                  <Mail size={14} className="absolute left-3.5 top-3 text-slate-500" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="somchai@apexbank.com"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)
-                </label>
-                <div className="relative">
-                  <Lock size={14} className="absolute left-3.5 top-3 text-slate-500" />
-                  <input
-                    type="password"
-                    required
-                    minLength={8}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500"
-                  />
-                </div>
-              </div>
-
-              <p className="text-[11px] text-cyan-400/90 font-medium">
-                🎁 สมาชิกใหม่รับสิทธิ์เปิดบัญชีออมทรัพย์ฟรีพร้อมเงินประเดิม ฿1,000.00 บาททันที
-              </p>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all active:scale-[0.99] flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
-              >
-                {isLoading ? (
-                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <span>ยืนยันเปิดบัญชีสมาชิก</span>
-                    <ArrowRight size={14} />
-                  </>
-                )}
-              </button>
-            </form>
-          )}
+              {isLoading ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <span>เข้าสู่ระบบ</span>
+                  <ArrowRight size={14} />
+                </>
+              )}
+            </button>
+          </form>
         </div>
       </div>
     </div>

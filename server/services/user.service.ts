@@ -15,6 +15,34 @@ export function getUserByEmail(email: string): DbUser | undefined {
   return state.users.find((u) => u.email.toLowerCase() === email.toLowerCase().trim());
 }
 
+export function getUserByIdentifier(identifier: string): DbUser | undefined {
+  const state = getFallbackState();
+  const trimmed = identifier.trim();
+  const cleanDigits = trimmed.replace(/\D/g, "");
+
+  // 1. Direct admin keyword or admin email
+  if (trimmed.toLowerCase() === "admin") {
+    const admin = state.users.find((u) => u.role === "ADMIN");
+    if (admin) return admin;
+  }
+
+  // 2. Lookup by email
+  const byEmail = state.users.find((u) => u.email.toLowerCase() === trimmed.toLowerCase());
+  if (byEmail) return byEmail;
+
+  // 3. Lookup by phone number (clean digits comparison)
+  if (cleanDigits.length >= 8) {
+    const byPhone = state.users.find((u) => {
+      if (!u.phone) return false;
+      const uDigits = u.phone.replace(/\D/g, "");
+      return uDigits === cleanDigits || uDigits.endsWith(cleanDigits) || cleanDigits.endsWith(uDigits);
+    });
+    if (byPhone) return byPhone;
+  }
+
+  return undefined;
+}
+
 export function getAllUsers(): Omit<DbUser, "password_hash">[] {
   const state = getFallbackState();
   return state.users.map(({ password_hash, ...rest }) => rest);

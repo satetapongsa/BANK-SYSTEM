@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Wallet,
   ArrowUpRight,
   ArrowDownLeft,
   ArrowLeftRight,
@@ -12,43 +11,21 @@ import {
   Check,
   Eye,
   EyeOff,
-  PlusCircle,
   Clock,
-  CheckCircle2,
   AlertCircle,
-  Building,
+  Building2,
+  Wallet,
 } from "lucide-react";
 import ConfirmModal from "@/app/components/ConfirmModal";
 import TransactionReceiptModal from "@/app/components/TransactionReceiptModal";
-
-interface BankAccount {
-  id: number;
-  account_number: string;
-  account_type: string;
-  currency: string;
-  balance: string;
-  status: string;
-}
-
-interface TransactionItem {
-  id: number;
-  transaction_reference: string;
-  type: string;
-  status: string;
-  amount: string;
-  description: string;
-  created_at: string;
-  from_account_number?: string;
-  to_account_number?: string;
-}
 
 export default function MemberPortalPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
-  const [accounts, setAccounts] = useState<BankAccount[]>([]);
+  const [accounts, setAccounts] = useState<any[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
-  const [transactions, setTransactions] = useState<TransactionItem[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [showBalance, setShowBalance] = useState(true);
   const [copiedAcc, setCopiedAcc] = useState(false);
 
@@ -61,13 +38,12 @@ export default function MemberPortalPage() {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawDesc, setWithdrawDesc] = useState("ถอนเงินสด");
 
-  // Confirmation modal state
+  // Confirmation & Receipt states
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmType, setConfirmType] = useState<"DEPOSIT" | "WITHDRAW">("DEPOSIT");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  // Receipt modal state
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [latestTx, setLatestTx] = useState<any>(null);
 
@@ -85,14 +61,14 @@ export default function MemberPortalPage() {
       }
 
       setUser(meJson.data.user);
-      const accList: BankAccount[] = meJson.data.accounts || [];
+      const accList = meJson.data.accounts || [];
       setAccounts(accList);
       if (accList.length > 0 && !selectedAccountId) {
         setSelectedAccountId(accList[0].id);
       }
 
       // Load transactions
-      const txRes = await fetch("/api/transactions?limit=8");
+      const txRes = await fetch("/api/transactions?limit=10");
       if (txRes.ok) {
         const txJson = await txRes.json();
         if (txJson.success) {
@@ -152,7 +128,6 @@ export default function MemberPortalPage() {
         throw new Error(json.error?.message || "ทำรายการไม่สำเร็จ");
       }
 
-      // Success
       setConfirmOpen(false);
       setDepositModalOpen(false);
       setWithdrawModalOpen(false);
@@ -161,7 +136,6 @@ export default function MemberPortalPage() {
       setLatestTx(json.data.transaction);
       setReceiptOpen(true);
 
-      // Refresh data
       await loadData();
     } catch (err: any) {
       setActionError(err.message || "เกิดข้อผิดพลาดในการทำรายการ");
@@ -172,39 +146,33 @@ export default function MemberPortalPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-10 w-48 bg-slate-800/60 rounded-xl" />
-        <div className="h-64 bg-slate-850/60 rounded-3xl" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="h-32 bg-slate-850/60 rounded-2xl" />
-          <div className="h-32 bg-slate-850/60 rounded-2xl" />
-          <div className="h-32 bg-slate-850/60 rounded-2xl" />
-        </div>
+      <div className="space-y-6 animate-pulse py-6">
+        <div className="h-8 w-48 bg-slate-200 rounded-xl" />
+        <div className="h-56 bg-slate-200 rounded-3xl" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6 animate-fade-in py-4">
       {/* Welcome Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-850/80 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <h1 className="text-2xl font-black text-slate-100 tracking-tight flex items-center gap-2">
-            สวัสดี, {user?.first_name} {user?.last_name} 👋
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            สวัสดี, คุณ{user?.first_name} {user?.last_name} 👋
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            ยินดีต้อนรับสู่ APEX Digital Banking พอร์ทัลบัญชีส่วนบุคคลของคุณ
+          <p className="text-xs text-slate-500 mt-1">
+            ยินดีต้อนรับสู่ APEX Digital Banking หน้าบัญชีส่วนบุคคลของคุณ
           </p>
         </div>
 
-        {/* Account Selector if multiple */}
         {accounts.length > 1 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">เลือกบัญชี:</span>
+            <span className="text-xs text-slate-500">เลือกบัญชี:</span>
             <select
               value={selectedAccountId || ""}
               onChange={(e) => setSelectedAccountId(Number(e.target.value))}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 text-xs font-mono font-semibold focus:outline-none focus:border-cyan-500"
+              className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-mono font-bold focus:outline-none focus:border-blue-500"
             >
               {accounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
@@ -216,56 +184,47 @@ export default function MemberPortalPage() {
         )}
       </div>
 
-      {/* Main Glass Bank Card */}
+      {/* Main Clean Bank Card */}
       {activeAccount ? (
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-cyan-950/40 border border-slate-800 p-7 shadow-2xl backdrop-blur-xl">
-          {/* Subtle decorative circuit lines */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-800 p-6 sm:p-8 text-white shadow-xl">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <span className="px-2.5 py-1 rounded-lg bg-cyan-950/80 border border-cyan-800/80 text-cyan-400 font-mono text-[11px] font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-2.5">
+                <span className="px-2.5 py-0.5 rounded-lg bg-white/20 text-white font-mono text-[10px] font-bold uppercase tracking-wider">
                   {activeAccount.account_type} ACCOUNT
                 </span>
-                <span
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
-                    activeAccount.status === "ACTIVE"
-                      ? "bg-emerald-950 text-emerald-400 border border-emerald-800/60"
-                      : "bg-rose-950 text-rose-400 border border-rose-800/60"
-                  }`}
-                >
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-emerald-400 text-slate-950">
                   {activeAccount.status}
                 </span>
               </div>
 
               {/* Account Number */}
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400 font-medium">เลขที่บัญชี:</span>
-                <span className="font-mono text-slate-200 font-bold text-sm tracking-wider">
+                <span className="text-xs text-blue-200">เลขที่บัญชี:</span>
+                <span className="font-mono text-white font-bold text-sm tracking-wider">
                   {activeAccount.account_number}
                 </span>
                 <button
                   onClick={handleCopyAccountNumber}
-                  className="p-1 text-slate-400 hover:text-cyan-400 transition-colors"
-                  title="คัดลอกเลขที่บัญชี"
+                  className="p-1 text-blue-200 hover:text-white transition-colors"
+                  title="คัดลอกเลขบัญชี"
                 >
-                  {copiedAcc ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                  {copiedAcc ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}
                 </button>
               </div>
 
-              {/* Balance display */}
-              <div className="pt-2">
+              {/* Balance */}
+              <div className="pt-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-slate-400">ยอดเงินคงเหลือที่ใช้ได้</span>
+                  <span className="text-xs font-semibold text-blue-200">ยอดเงินคงเหลือที่ใช้ได้</span>
                   <button
                     onClick={() => setShowBalance(!showBalance)}
-                    className="text-slate-500 hover:text-slate-300 transition-colors"
+                    className="text-blue-300 hover:text-white transition-colors"
                   >
                     {showBalance ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
                 </div>
-                <div className="text-3xl sm:text-4xl font-black font-mono tracking-tight text-slate-100 mt-1">
+                <div className="text-3xl sm:text-4xl font-black font-mono tracking-tight text-white mt-1">
                   {showBalance ? (
                     <>
                       ฿
@@ -273,7 +232,7 @@ export default function MemberPortalPage() {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}{" "}
-                      <span className="text-xs text-slate-400 font-normal">THB</span>
+                      <span className="text-xs text-blue-200 font-normal">THB</span>
                     </>
                   ) : (
                     "••••••••••"
@@ -282,11 +241,11 @@ export default function MemberPortalPage() {
               </div>
             </div>
 
-            {/* Quick Actions Panel */}
-            <div className="flex flex-wrap items-center gap-3">
+            {/* Quick Actions */}
+            <div className="flex flex-wrap items-center gap-2.5">
               <Link
                 href="/portal/transfer"
-                className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all active:scale-[0.98]"
+                className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white text-blue-700 hover:bg-blue-50 font-bold text-xs shadow-md transition-all active:scale-[0.98]"
               >
                 <ArrowLeftRight size={16} />
                 <span>โอนเงินทันที</span>
@@ -294,55 +253,55 @@ export default function MemberPortalPage() {
 
               <button
                 onClick={() => setDepositModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-emerald-400 border border-slate-700 font-bold text-xs transition-all active:scale-[0.98]"
+                className="flex items-center gap-1.5 px-4 py-3 rounded-2xl bg-blue-800/80 hover:bg-blue-800 text-white border border-blue-600 font-bold text-xs transition-all active:scale-[0.98]"
               >
-                <ArrowDownLeft size={16} />
+                <ArrowDownLeft size={16} className="text-emerald-300" />
                 <span>ฝากเงิน</span>
               </button>
 
               <button
                 onClick={() => setWithdrawModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-amber-400 border border-slate-700 font-bold text-xs transition-all active:scale-[0.98]"
+                className="flex items-center gap-1.5 px-4 py-3 rounded-2xl bg-blue-800/80 hover:bg-blue-800 text-white border border-blue-600 font-bold text-xs transition-all active:scale-[0.98]"
               >
-                <ArrowUpRight size={16} />
+                <ArrowUpRight size={16} className="text-amber-300" />
                 <span>ถอนเงิน</span>
               </button>
             </div>
           </div>
         </div>
       ) : (
-        <div className="p-8 text-center bg-slate-900 border border-slate-800 rounded-3xl">
-          <Building size={36} className="mx-auto text-slate-600 mb-2" />
-          <p className="text-sm font-semibold text-slate-300">ยังไม่มีบัญชีเงินฝาก</p>
+        <div className="p-8 text-center bg-white border border-slate-200 rounded-3xl">
+          <Building2 size={36} className="mx-auto text-slate-400 mb-2" />
+          <p className="text-sm font-semibold text-slate-600">ยังไม่มีบัญชีเงินฝาก</p>
         </div>
       )}
 
-      {/* Recent Activity Table */}
-      <div className="bg-slate-900/70 border border-slate-800/80 rounded-3xl p-6 shadow-xl backdrop-blur-md">
+      {/* Recent Transactions */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-              <Clock size={18} className="text-cyan-400" />
-              <span>รายการธุรกรรมล่าสุด (Recent Transactions)</span>
+            <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+              <Clock size={18} className="text-blue-600" />
+              <span>รายการธุรกรรมล่าสุด</span>
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              แสดง 8 รายการล่าสุดของบัญชีคุณ
+            <p className="text-xs text-slate-500 mt-0.5">
+              10 รายการล่าสุดในบัญชีของคุณ
             </p>
           </div>
           <Link
             href="/portal/transactions"
-            className="text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+            className="text-xs font-bold text-blue-600 hover:text-blue-700"
           >
             ดูทั้งหมด &rarr;
           </Link>
         </div>
 
         {transactions.length === 0 ? (
-          <div className="py-12 text-center text-xs text-slate-500">
-            ยังไม่มีรายการธุรกรรมในระบบ เริ่มต้นด้วยการฝากเงินหรือโอนเงิน
+          <div className="py-12 text-center text-xs text-slate-400">
+            ยังไม่มีประวัติธุรกรรมในบัญชีนี้
           </div>
         ) : (
-          <div className="divide-y divide-slate-800/60 overflow-x-auto">
+          <div className="divide-y divide-slate-100 overflow-x-auto">
             {transactions.map((tx) => {
               const isPositive =
                 tx.type === "DEPOSIT" ||
@@ -355,14 +314,14 @@ export default function MemberPortalPage() {
                     setLatestTx(tx);
                     setReceiptOpen(true);
                   }}
-                  className="py-3.5 flex items-center justify-between hover:bg-slate-800/30 px-2 rounded-xl cursor-pointer transition-colors"
+                  className="py-3.5 flex items-center justify-between hover:bg-slate-50 px-2 rounded-xl cursor-pointer transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-9 h-9 rounded-xl flex items-center justify-center ${
                         isPositive
-                          ? "bg-emerald-950/60 text-emerald-400 border border-emerald-800/40"
-                          : "bg-slate-800/80 text-cyan-400 border border-slate-700/60"
+                          ? "bg-emerald-50 text-emerald-600"
+                          : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {tx.type === "DEPOSIT" ? (
@@ -374,7 +333,7 @@ export default function MemberPortalPage() {
                       )}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-200">
+                      <p className="text-xs font-bold text-slate-800">
                         {tx.description || tx.type}
                       </p>
                       <p className="text-[11px] font-mono text-slate-400 mt-0.5">
@@ -386,8 +345,8 @@ export default function MemberPortalPage() {
 
                   <div className="text-right">
                     <p
-                      className={`font-mono text-sm font-bold ${
-                        isPositive ? "text-emerald-400" : "text-slate-100"
+                      className={`font-mono text-sm font-black ${
+                        isPositive ? "text-emerald-600" : "text-slate-900"
                       }`}
                     >
                       {isPositive ? "+" : "-"}฿
@@ -395,7 +354,7 @@ export default function MemberPortalPage() {
                         minimumFractionDigits: 2,
                       })}
                     </p>
-                    <span className="text-[10px] font-mono text-slate-500 uppercase">
+                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">
                       {tx.status}
                     </span>
                   </div>
@@ -408,20 +367,20 @@ export default function MemberPortalPage() {
 
       {/* Deposit Modal */}
       {depositModalOpen && activeAccount && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-100 mb-1">ฝากเงินเข้าบัญชี (Deposit)</h3>
-            <p className="text-xs text-slate-400 mb-4">
-              ฝากเงินเข้าบัญชี {activeAccount.account_number}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl">
+            <h3 className="text-lg font-black text-slate-900 mb-1">ฝากเงินเข้าบัญชี (Deposit)</h3>
+            <p className="text-xs text-slate-500 mb-4">
+              ฝากเข้าบัญชี {activeAccount.account_number}
             </p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   จำนวนเงินที่ต้องการฝาก (บาท)
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-3 font-mono font-bold text-cyan-400">
+                  <span className="absolute left-3.5 top-2.5 font-mono font-bold text-blue-600">
                     ฿
                   </span>
                   <input
@@ -431,19 +390,19 @@ export default function MemberPortalPage() {
                     placeholder="1000.00"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 font-mono text-sm focus:outline-none focus:border-cyan-500"
+                    className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-sm focus:outline-none focus:border-blue-500 focus:bg-white"
                   />
                 </div>
               </div>
 
-              {/* Quick Amount Buttons */}
+              {/* Presets */}
               <div className="grid grid-cols-4 gap-2">
                 {[500, 1000, 5000, 10000].map((amt) => (
                   <button
                     key={amt}
                     type="button"
                     onClick={() => setDepositAmount(amt.toString())}
-                    className="py-1.5 text-xs font-mono font-bold rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-cyan-500 hover:text-cyan-400 transition-colors"
+                    className="py-1.5 text-xs font-mono font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
                   >
                     +{amt.toLocaleString()}
                   </button>
@@ -451,35 +410,35 @@ export default function MemberPortalPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  บันทึกช่วยจำ (Description)
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  บันทึกช่วยจำ
                 </label>
                 <input
                   type="text"
                   value={depositDesc}
                   onChange={(e) => setDepositDesc(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-500 focus:bg-white"
                 />
               </div>
 
               {actionError && (
-                <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
-                  <AlertCircle size={14} />
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                  <AlertCircle size={14} className="text-rose-600" />
                   <span>{actionError}</span>
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
                 <button
                   onClick={() => setDepositModalOpen(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-200"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800"
                 >
                   ยกเลิก
                 </button>
                 <button
                   disabled={!depositAmount || Number(depositAmount) <= 0}
                   onClick={() => handleOpenConfirm("DEPOSIT")}
-                  className="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/20 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm disabled:opacity-50"
                 >
                   ตรวจสอบและยืนยัน
                 </button>
@@ -491,21 +450,21 @@ export default function MemberPortalPage() {
 
       {/* Withdraw Modal */}
       {withdrawModalOpen && activeAccount && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-slate-100 mb-1">ถอนเงินสด (Withdraw)</h3>
-            <p className="text-xs text-slate-400 mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl">
+            <h3 className="text-lg font-black text-slate-900 mb-1">ถอนเงินสด (Withdraw)</h3>
+            <p className="text-xs text-slate-500 mb-4">
               ถอนจากบัญชี {activeAccount.account_number} (ยอดคงเหลือ ฿
               {Number(activeAccount.balance).toLocaleString("th-TH")})
             </p>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   จำนวนเงินที่ต้องการถอน (บาท)
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-3 font-mono font-bold text-amber-400">
+                  <span className="absolute left-3.5 top-2.5 font-mono font-bold text-amber-600">
                     ฿
                   </span>
                   <input
@@ -516,19 +475,19 @@ export default function MemberPortalPage() {
                     placeholder="500.00"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 font-mono text-sm focus:outline-none focus:border-amber-500"
+                    className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-sm focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
                 </div>
               </div>
 
-              {/* Quick Amount Buttons */}
+              {/* Presets */}
               <div className="grid grid-cols-4 gap-2">
                 {[500, 1000, 2000, 5000].map((amt) => (
                   <button
                     key={amt}
                     type="button"
                     onClick={() => setWithdrawAmount(amt.toString())}
-                    className="py-1.5 text-xs font-mono font-bold rounded-lg bg-slate-950 border border-slate-800 text-slate-300 hover:border-amber-500 hover:text-amber-400 transition-colors"
+                    className="py-1.5 text-xs font-mono font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
                   >
                     ฿{amt.toLocaleString()}
                   </button>
@@ -536,35 +495,35 @@ export default function MemberPortalPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  บันทึกช่วยจำ (Description)
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  บันทึกช่วยจำ
                 </label>
                 <input
                   type="text"
                   value={withdrawDesc}
                   onChange={(e) => setWithdrawDesc(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 text-xs focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
                 />
               </div>
 
               {actionError && (
-                <div className="p-3 rounded-xl bg-rose-950/50 border border-rose-800 text-rose-300 text-xs flex items-center gap-2">
-                  <AlertCircle size={14} />
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                  <AlertCircle size={14} className="text-rose-600" />
                   <span>{actionError}</span>
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
                 <button
                   onClick={() => setWithdrawModalOpen(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-slate-200"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800"
                 >
                   ยกเลิก
                 </button>
                 <button
                   disabled={!withdrawAmount || Number(withdrawAmount) <= 0}
                   onClick={() => handleOpenConfirm("WITHDRAW")}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm disabled:opacity-50"
                 >
                   ตรวจสอบและยืนยัน
                 </button>
@@ -581,7 +540,7 @@ export default function MemberPortalPage() {
         onConfirm={handleExecuteAction}
         isLoading={isSubmitting}
         title={confirmType === "DEPOSIT" ? "ยืนยันการฝากเงิน" : "ยืนยันการถอนเงิน"}
-        description="โปรดตรวจสอบรายละเอียดด้านล่างก่อนยืนยันการทำรายการ"
+        description="โปรดตรวจสอบรายละเอียดด้านล่างก่อนยืนยัน"
         type={confirmType === "DEPOSIT" ? "info" : "warning"}
         confirmText="ยืนยันทำรายการ"
         details={[

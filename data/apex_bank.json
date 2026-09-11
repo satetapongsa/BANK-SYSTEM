@@ -11,7 +11,7 @@
       "status": "ACTIVE",
       "created_at": "2026-09-11T12:28:22.315Z",
       "updated_at": "2026-09-11T12:28:22.315Z",
-      "last_login_at": "2026-09-11T15:57:29.840Z"
+      "last_login_at": "2026-09-11T16:00:04.104Z"
     },
     {
       "id": 2,
@@ -24,7 +24,7 @@
       "status": "ACTIVE",
       "created_at": "2026-09-11T12:28:22.315Z",
       "updated_at": "2026-09-11T12:28:22.315Z",
-      "last_login_at": "2026-09-11T15:57:45.176Z"
+      "last_login_at": "2026-09-11T16:00:13.159Z"
     },
     {
       "id": 3,
@@ -442,6 +442,110 @@
     }
   ],
   "audit_logs": [
+    {
+      "id": 1789142413250,
+      "actor_user_id": 2,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "somchai@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "node",
+      "created_at": "2026-09-11T16:00:13.160Z"
+    },
+    {
+      "id": 1789142404972,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "node",
+      "created_at": "2026-09-11T16:00:04.110Z"
+    },
+    {
+      "id": 1789142385906,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "node",
+      "created_at": "2026-09-11T15:59:45.338Z"
+    },
+    {
+      "id": 1789142375292,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "node",
+      "created_at": "2026-09-11T15:59:34.830Z"
+    },
+    {
+      "id": 1789142365388,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "node",
+      "created_at": "2026-09-11T15:59:24.698Z"
+    },
+    {
+      "id": 1789142326417,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+      "created_at": "2026-09-11T15:58:45.869Z"
+    },
+    {
+      "id": 1789142323594,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+      "created_at": "2026-09-11T15:58:42.860Z"
+    },
+    {
+      "id": 1789142322954,
+      "actor_user_id": 1,
+      "action": "USER_LOGIN",
+      "entity_type": "USER",
+      "entity_id": "admin@apexbank.com",
+      "before_data": null,
+      "after_data": null,
+      "reason": "Successful credentials login",
+      "ip_address": "::1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0",
+      "created_at": "2026-09-11T15:58:42.105Z"
+    },
     {
       "id": 1789142265180,
       "actor_user_id": 2,

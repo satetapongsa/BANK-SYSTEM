@@ -36,7 +36,7 @@ export async function createSessionToken(payload: SessionPayload): Promise<strin
 
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(SECRET_KEY, token);
+    const { payload } = await jwtVerify(token, SECRET_KEY);
     return {
       userId: Number(payload.userId),
       email: String(payload.email),

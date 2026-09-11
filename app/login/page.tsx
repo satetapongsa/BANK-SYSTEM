@@ -2,13 +2,13 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Lock, Phone, User, ArrowRight, AlertCircle, Sparkles, KeyRound } from "lucide-react";
+import { Shield, Eye, EyeOff, AlertCircle, ArrowRight } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [roleMode, setRoleMode] = useState<"MEMBER" | "ADMIN">("MEMBER");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +27,7 @@ export default function LoginPage() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        throw new Error(json.error?.message || "เข้าสู่ระบบไม่สำเร็จ");
+        throw new Error(json.error?.message || "เข้าสู่ระบบไม่สำเร็จ ตรวจสอบข้อมูลแล้วลองอีกครั้ง");
       }
 
       const role = json.data?.user?.role;
@@ -43,188 +43,162 @@ export default function LoginPage() {
     }
   };
 
-  const fillAdmin = () => {
-    setRoleMode("ADMIN");
-    setIdentifier("admin");
-    setPassword("admin");
-    handleLogin("admin", "admin");
-  };
-
-  const fillMember = () => {
-    setRoleMode("MEMBER");
-    setIdentifier("089-123-4567");
-    setPassword("123456");
-    handleLogin("089-123-4567", "123456");
+  const quickLogin = (id: string, pass: string) => {
+    setIdentifier(id);
+    setPassword(pass);
+    handleLogin(id, pass);
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
-        {/* Brand Banner */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 mb-3">
-            <ShieldCheck size={32} className="text-white stroke-[2.5]" />
+    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-8 bg-slate-50">
+      {/* Google-Style Container Card */}
+      <div className="w-full max-w-[440px] bg-white border border-slate-200/80 rounded-3xl p-8 sm:p-10 shadow-sm">
+        {/* Brand Logo & Title */}
+        <div className="flex flex-col items-start mb-7">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
+              <Shield size={22} className="stroke-[2.5]" />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-slate-800">
+              APEX <span className="text-blue-600">BANK</span>
+            </span>
           </div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            APEX <span className="text-blue-600">BANK</span>
+
+          <h1 className="text-2xl font-normal text-slate-900 tracking-tight">
+            ลงชื่อเข้าใช้
           </h1>
-          <p className="text-xs font-medium text-slate-500 mt-1">
-            ระบบธนาคารดิจิทัลที่ปลอดภัย ใช้งานง่าย สะอาด เป็นระเบียบ
+          <p className="text-sm text-slate-600 mt-1">
+            ใช้บัญชี APEX Bank ของคุณ
           </p>
         </div>
 
-        {/* Card Box */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xl">
-          {/* Quick 1-Click Login Bar */}
-          <div className="mb-6 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
-              <Sparkles size={14} className="text-blue-600" />
-              <span>คลิกเดียวเข้าสู่ระบบด่วน (Demo Accounts):</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={fillAdmin}
-                disabled={isLoading}
-                className="px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-bold transition-all text-center"
-              >
-                👑 แอดมิน (admin / admin)
-              </button>
-              <button
-                type="button"
-                onClick={fillMember}
-                disabled={isLoading}
-                className="px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold transition-all text-center"
-              >
-                👤 ผู้ใช้ทั่วไป (Somchai)
-              </button>
-            </div>
+        {/* Error Notification */}
+        {error && (
+          <div className="mb-6 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2.5">
+            <AlertCircle size={16} className="shrink-0 text-red-600 mt-0.5" />
+            <span className="leading-relaxed">{error}</span>
+          </div>
+        )}
+
+        {/* Form */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          className="space-y-6"
+        >
+          {/* Identifier Input */}
+          <div className="relative">
+            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              อีเมล เบอร์โทรศัพท์ หรือ ชื่อผู้ใช้
+            </label>
+            <input
+              type="text"
+              required
+              autoFocus
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+              placeholder="เช่น 089-123-4567 หรือ admin"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors bg-white"
+            />
           </div>
 
-          {/* Mode Switcher */}
-          <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200 mb-6">
-            <button
-              type="button"
-              onClick={() => {
-                setRoleMode("MEMBER");
-                setIdentifier("");
-                setPassword("");
-                setError(null);
-              }}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                roleMode === "MEMBER"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              ลูกค้าบุคคล (Member)
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setRoleMode("ADMIN");
-                setIdentifier("admin");
-                setPassword("admin");
-                setError(null);
-              }}
-              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                roleMode === "ADMIN"
-                  ? "bg-white text-purple-600 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              ผู้ดูแลระบบ (Admin)
-            </button>
-          </div>
-
-          {/* Error Alert */}
-          {error && (
-            <div className="mb-5 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-              <AlertCircle size={16} className="shrink-0 text-rose-600" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
-            className="space-y-4"
-          >
-            {roleMode === "MEMBER" ? (
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  เบอร์โทรศัพท์ (Phone Number) หรือ อีเมล
-                </label>
-                <div className="relative">
-                  <Phone size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
-                  <input
-                    type="text"
-                    required
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="เช่น 089-123-4567 หรืออีเมล"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition-colors"
-                  />
-                </div>
-              </div>
-            ) : (
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  ชื่อผู้ใช้แอดมิน (Username)
-                </label>
-                <div className="relative">
-                  <User size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
-                  <input
-                    type="text"
-                    required
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="admin"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-purple-500 focus:bg-white transition-colors"
-                  />
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                รหัสผ่าน (Password)
+          {/* Password Input */}
+          <div className="relative">
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-medium text-slate-700">
+                รหัสผ่าน
               </label>
-              <div className="relative">
-                <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-blue-500 focus:bg-white transition-colors"
-                />
-              </div>
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-xs text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1"
+              >
+                {showPassword ? (
+                  <>
+                    <EyeOff size={13} />
+                    <span>ซ่อนรหัส</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye size={13} />
+                    <span>แสดงรหัส</span>
+                  </>
+                )}
+              </button>
             </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="ป้อนรหัสผ่านของคุณ"
+              className="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors bg-white"
+            />
+          </div>
+
+          {/* Action Row */}
+          <div className="flex items-center justify-between pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                alert("สำหรับบัญชีตัวอย่าง:\n- แอดมิน: admin / admin\n- สมาชิก: 089-123-4567 / 123456");
+              }}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline py-1.5"
+            >
+              ต้องการความช่วยเหลือ?
+            </button>
 
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3 rounded-xl text-white font-bold text-xs shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2 mt-2 disabled:opacity-50 ${
-                roleMode === "ADMIN"
-                  ? "bg-purple-600 hover:bg-purple-700 shadow-purple-500/20"
-                  : "bg-blue-600 hover:bg-blue-700 shadow-blue-500/20"
-              }`}
+              className="px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-medium transition-all shadow-sm flex items-center gap-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   <span>เข้าสู่ระบบ</span>
-                  <ArrowRight size={14} />
+                  <ArrowRight size={15} />
                 </>
               )}
             </button>
-          </form>
+          </div>
+        </form>
+
+        {/* Quick Test Shortcuts (Clean Google-Style Footnote) */}
+        <div className="mt-8 pt-6 border-t border-slate-100">
+          <p className="text-xs text-slate-500 mb-2.5 font-medium">
+            ทางลัดทดสอบระบบ (คลิกเพื่อเข้าสู่ระบบทันที):
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => quickLogin("admin", "admin")}
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors border border-slate-200/60 flex items-center gap-1.5"
+            >
+              <span>👑 เข้าเป็น Admin</span>
+              <span className="text-[11px] text-slate-400 font-mono">(admin)</span>
+            </button>
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => quickLogin("089-123-4567", "123456")}
+              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors border border-blue-100 flex items-center gap-1.5"
+            >
+              <span>👤 เข้าเป็นผู้ใช้ (Somchai)</span>
+              <span className="text-[11px] text-blue-400 font-mono">(089...)</span>
+            </button>
+          </div>
         </div>
+      </div>
+
+      {/* Footer Info */}
+      <div className="mt-6 text-center text-xs text-slate-400">
+        APEX Digital Banking Platform • มาตรฐานความปลอดภัยระดับองค์กร
       </div>
     </div>
   );

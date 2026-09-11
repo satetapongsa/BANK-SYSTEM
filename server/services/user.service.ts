@@ -30,15 +30,29 @@ export function getUserByIdentifier(identifier: string): DbUser | undefined {
   const byEmail = state.users.find((u) => u.email.toLowerCase() === trimmed.toLowerCase());
   if (byEmail) return byEmail;
 
-  // 3. Lookup by phone number (clean digits comparison)
+  // 3. Lookup by phone number (handles both 08x-xxx-xxxx and +668x-xxx-xxxx)
   if (cleanDigits.length >= 8) {
+    // Extract significant tail digits (last 8-9 digits)
+    const normalizedInputTail = cleanDigits.startsWith("0") ? cleanDigits.slice(1) : cleanDigits.replace(/^66/, "");
+    
     const byPhone = state.users.find((u) => {
       if (!u.phone) return false;
       const uDigits = u.phone.replace(/\D/g, "");
-      return uDigits === cleanDigits || uDigits.endsWith(cleanDigits) || cleanDigits.endsWith(uDigits);
+      const uTail = uDigits.startsWith("0") ? uDigits.slice(1) : uDigits.replace(/^66/, "");
+      
+      return (
+        uDigits === cleanDigits ||
+        uTail === normalizedInputTail ||
+        uDigits.endsWith(normalizedInputTail) ||
+        cleanDigits.endsWith(uTail)
+      );
     });
     if (byPhone) return byPhone;
   }
+
+  // 4. Fallback lookup by first name / username
+  const byName = state.users.find((u) => u.first_name.toLowerCase() === trimmed.toLowerCase());
+  if (byName) return byName;
 
   return undefined;
 }

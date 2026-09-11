@@ -212,14 +212,14 @@ export default function NavBar() {
                   <span className="hidden sm:inline">ออกจากระบบ</span>
                 </button>
               </>
-            ) : (
+            ) : pathname !== "/login" ? (
               <Link
                 href="/login"
                 className="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm shadow-blue-500/20 transition-all"
               >
                 เข้าสู่ระบบ
               </Link>
-            )}
+            ) : null}
 
             {/* Mobile menu toggle */}
             {user && (

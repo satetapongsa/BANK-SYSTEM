@@ -1,7 +1,7 @@
 // app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { loginSchema } from "@/lib/schemas";
-import { getUserByEmail } from "@/server/services/user.service";
+import { getUserByEmail, getUserByIdentifier } from "@/server/services/user.service";
 import { verifyPassword, createSessionToken, SESSION_COOKIE_NAME } from "@/server/auth/session";
 import { checkRateLimit, apiError, apiSuccess } from "@/server/security/guard";
 import { logAudit } from "@/server/services/audit.service";

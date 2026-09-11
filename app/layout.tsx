@@ -9,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "WAVY BANK — Secure Digital Banking Portal",
-  description: "WAVY BANK — ระบบธนาคารดิจิทัลที่ปลอดภัย มีประสิทธิภาพ และเรียบหรูสากล สำหรับการบริหารจัดการในองค์กร",
-  keywords: "wavy bank, digital banking, secure banking, online banking, admin portal",
+  title: "APEX DIGITAL BANK — Next-Gen Digital Banking Platform",
+  description: "APEX DIGITAL BANK — ระบบบริหารจัดการการเงินและธนาคารดิจิทัลระดับองค์กร ปลอดภัยด้วย ACID Database Transaction, RBAC และ Immutable Audit Logging",
+  keywords: "apex bank, digital banking, financial platform, secure banking, acid transactions",
 };
 
 export default function RootLayout({
